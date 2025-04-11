@@ -40,10 +40,10 @@ jobs:
           PUBLIC_URL: http://cppalliance.org/boost-gecko/
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./search_interface/build
 
       - name: Deploy to github pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

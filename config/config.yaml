@@ -1,28 +1,28 @@
 boost:
   version: '1_88_0'
   root: '../boost_1_88_0'
-  link: 'https://archives.boost.io/beta/1.88.0.beta1/source/boost_1_88_0_b1.tar.gz'
+  link: 'https://archives.boost.io/release/1.88.0/source/boost_1_88_0.tar.gz'
 
 website-v2-docs:
   root: '../website-v2-docs/build'
   sections:
     - key: 'contributor-guide'
       name: 'Contributor Guide'
-      last-records: 513
-      last-words: 53908
-      last-lvls: 1773
+      last-records: 457
+      last-words: 52621
+      last-lvls: 1547
 
     - key: 'formal-reviews'
       name: 'Formal Reviews'
-      last-records: 61
-      last-words: 8994
-      last-lvls: 207
+      last-records: 62
+      last-words: 9248
+      last-lvls: 211
 
     - key: 'user-guide'
       name: 'User Guide'
-      last-records: 295
-      last-words: 41189
-      last-lvls: 901
+      last-records: 373
+      last-words: 71384
+      last-lvls: 1158
 
 algolia:
   app-id: D7O1MLLTAF
@@ -325,9 +325,9 @@ crawlers:
         last-lvls: 14800
 
       - key: url
-        last-records: 7147
-        last-words: 113871
-        last-lvls: 15272
+        last-records: 6776
+        last-words: 111447
+        last-lvls: 12555
 
   - name: AsciiDoc
     libraries:
@@ -370,6 +370,11 @@ crawlers:
         last-records: 91
         last-words: 12200
         last-lvls: 221
+
+      - key: hash2
+        last-records: 156
+        last-words: 15999
+        last-lvls: 569
 
       - key: io
         last-records: 42
@@ -454,9 +459,9 @@ crawlers:
         last-lvls: 195
 
       - key: asio
-        last-records: 10208
-        last-words: 384721
-        last-lvls: 37404
+        last-records: 10219
+        last-words: 386999
+        last-lvls: 37445
 
       - key: atomic
         last-records: 77
@@ -465,7 +470,7 @@ crawlers:
 
       - key: beast
         last-records: 4878
-        last-words: 161264
+        last-words: 161263
         last-lvls: 18468
 
       - key: bimap
@@ -604,9 +609,9 @@ crawlers:
         last-lvls: 7006
 
       - key: geometry
-        last-records: 2544
-        last-words: 86507
-        last-lvls: 10694
+        last-records: 2545
+        last-words: 86582
+        last-lvls: 10696
 
       - key: heap
         last-records: 91
@@ -664,13 +669,13 @@ crawlers:
         last-lvls: 92
 
       - key: lockfree
-        last-records: 41
-        last-words: 6488
-        last-lvls: 96
+        last-records: 45
+        last-words: 6803
+        last-lvls: 113
 
       - key: log
         last-records: 1735
-        last-words: 118248
+        last-words: 118299
         last-lvls: 7456
 
       - key: math

@@ -224,6 +224,10 @@ export const libraries = [
     name: 'Hana',
   },
   {
+    key: 'hash2',
+    name: 'Hash2',
+  },
+  {
     key: 'heap',
     name: 'Heap',
   },
@@ -306,6 +310,10 @@ export const libraries = [
   {
     key: 'mpl',
     name: 'MPL',
+  },
+  {
+    key: 'mqtt5',
+    name: 'MQTT5',
   },
   {
     key: 'math',
