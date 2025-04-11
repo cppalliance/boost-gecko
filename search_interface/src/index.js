@@ -56,6 +56,8 @@ function parseURL() {
   let boostVersion = undefined;
   let path = window.location.pathname;
 
+  path = path.replace('/library/latest', '/doc/libs/latest');
+
   const librariesPathPrefix = '/doc/libs/';
   if (!path.startsWith(librariesPathPrefix)) {
     const learnPathPrefixes = ['/docs/', '/doc/user-guide/', '/doc/formal-reviews/', '/doc/contributor-guide/']
