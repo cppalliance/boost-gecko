@@ -38,19 +38,21 @@ function Demo() {
           <FormControl fullWidth>
             <InputLabel>Theme</InputLabel>
             <Select size='small' value={themeMode} onChange={handleModeChange} label='Theme' sx={{ height: 36 }}>
-              <MenuItem value='light'>
-                Light
-              </MenuItem>
-              <MenuItem value='dark'>
-                Dark
-              </MenuItem>
+              <MenuItem value='light'>Light</MenuItem>
+              <MenuItem value='dark'>Dark</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item md={8} xs={5}>
           <FormControl fullWidth>
             <InputLabel>Library</InputLabel>
-            <Select size='small' value={library ? library.key : 'none'} onChange={handleLibraryChange} label='Library' sx={{ height: 36 }}>
+            <Select
+              size='small'
+              value={library ? library.key : 'none'}
+              onChange={handleLibraryChange}
+              label='Library'
+              sx={{ height: 36 }}
+            >
               <MenuItem value='none'>
                 <em>None</em>
               </MenuItem>

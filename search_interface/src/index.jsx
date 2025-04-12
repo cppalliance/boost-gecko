@@ -60,9 +60,8 @@ function parseURL() {
 
   const librariesPathPrefix = '/doc/libs/';
   if (!path.startsWith(librariesPathPrefix)) {
-    const learnPathPrefixes = ['/docs/', '/doc/user-guide/', '/doc/formal-reviews/', '/doc/contributor-guide/']
-    if (learnPathPrefixes.some(str => path.startsWith(str)))
-      onLearnPages = true
+    const learnPathPrefixes = ['/docs/', '/doc/user-guide/', '/doc/formal-reviews/', '/doc/contributor-guide/'];
+    if (learnPathPrefixes.some((str) => path.startsWith(str))) onLearnPages = true;
     return { onLearnPages, boostVersion, library };
   }
   path = path.replace(librariesPathPrefix, '');

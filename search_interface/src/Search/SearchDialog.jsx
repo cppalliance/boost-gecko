@@ -36,7 +36,7 @@ function SearchDialog({
   librariesAlgoliaIndex,
   learnAlgoliaIndex,
   alogliaAppId,
-  alogliaApiKey
+  alogliaApiKey,
 }) {
   const [searchClient] = React.useState(() => {
     const algoliaClient = algoliasearch(alogliaAppId, alogliaApiKey);
@@ -61,7 +61,7 @@ function SearchDialog({
         }
 
         return algoliaClient.search(requests);
-      }
+      },
     };
   });
 
@@ -91,23 +91,26 @@ function SearchDialog({
 
   const handleDialogClose = React.useCallback(() => window.history.back(), []);
 
-  const theme = React.useMemo(() => createTheme({
-    palette: {
-      mode: themeMode,
-      primary: {
-        main: (themeMode === 'dark' ? '#7DD3FC' : '#0284C7'),
-      },
-      ...(themeMode === 'dark' &&
-      {
-        background: {
-          paper: '#172A34',
-        }
-      })
-    },
-    typography: {
-      allVariants: { ...fontFamily && { fontFamily } }
-    },
-  }), [themeMode, fontFamily]);
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: themeMode,
+          primary: {
+            main: themeMode === 'dark' ? '#7DD3FC' : '#0284C7',
+          },
+          ...(themeMode === 'dark' && {
+            background: {
+              paper: '#172A34',
+            },
+          }),
+        },
+        typography: {
+          allVariants: { ...(fontFamily && { fontFamily }) },
+        },
+      }),
+    [themeMode, fontFamily],
+  );
 
   const dialogShouldBeFullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -245,7 +248,12 @@ function SearchDialog({
                 <Box hidden={selectedTab !== '1'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={librariesAlgoliaIndex}>
                     <Configure hitsPerPage={30} />
-                    <InfiniteHits urlPrefix={librariesUrlPrefix} setnbHits={setnbHits1} onClick={setRecentSearch} showLibName />
+                    <InfiniteHits
+                      urlPrefix={librariesUrlPrefix}
+                      setnbHits={setnbHits1}
+                      onClick={setRecentSearch}
+                      showLibName
+                    />
                   </Index>
                 </Box>
                 <Box hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
@@ -266,7 +274,12 @@ function SearchDialog({
                 <Box hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={librariesAlgoliaIndex}>
                     <Configure hitsPerPage={30} filters={'NOT library_key:' + library.key} />
-                    <InfiniteHits urlPrefix={librariesUrlPrefix} setnbHits={setnbHits2} onClick={setRecentSearch} showLibName />
+                    <InfiniteHits
+                      urlPrefix={librariesUrlPrefix}
+                      setnbHits={setnbHits2}
+                      onClick={setRecentSearch}
+                      showLibName
+                    />
                   </Index>
                 </Box>
               </>

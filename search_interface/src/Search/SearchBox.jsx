@@ -43,19 +43,17 @@ function SearchBox({ inputRef, recentSearches }) {
           {...params}
           sx={{
             '& input:focus': {
-              boxShadow: 'none'
-            }
+              boxShadow: 'none',
+            },
           }}
           placeholder='Search...'
           inputRef={inputRef}
           InputProps={{
             ...params.InputProps,
-            style: { fontSize: "1.2rem" },
+            style: { fontSize: '1.2rem' },
             endAdornment: (
               <React.Fragment>
-                {status === 'loading' || status === 'stalled' ? (
-                  <CircularProgress size={16} />
-                ) : null}
+                {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),
