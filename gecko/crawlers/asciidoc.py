@@ -11,17 +11,12 @@ class AsciiDoc(Crawler):
         sections = {}
         index_path = self._boost_root / 'libs' / library_key / 'index.html'
 
-        if library_key == 'array':
-            index_path = str(index_path.parent / 'doc' / 'html' / 'array.html')
-        elif library_key == 'process':
-            index_path = str(index_path.parent / 'doc' / 'html' / 'index.html')
-        else:
-            # resolve redirect address
-            with open(index_path, 'r', encoding='utf-8', errors='ignore') as file:
-                soup = BeautifulSoup(file.read(), 'html.parser')
-                assert soup.select_one('head > meta[http-equiv="refresh"]')
-                redirect_to = soup.select_one('body a').get("href")
-                index_path = urljoin(str(index_path), redirect_to)
+        # resolve redirect address
+        with open(index_path, 'r', encoding='utf-8', errors='ignore') as file:
+            soup = BeautifulSoup(file.read(), 'html.parser')
+            assert soup.select_one('head > meta[http-equiv="refresh"]')
+            redirect_to = soup.select_one('body a').get("href")
+            index_path = urljoin(str(index_path), redirect_to)
 
         with open(index_path, 'r', encoding='utf-8', errors='ignore') as file:
             soup = BeautifulSoup(file.read(), 'html.parser')

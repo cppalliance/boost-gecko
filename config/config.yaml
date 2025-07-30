@@ -1,7 +1,7 @@
 boost:
-  version: '1_88_0'
-  root: '../boost_1_88_0'
-  link: 'https://archives.boost.io/release/1.88.0/source/boost_1_88_0.tar.gz'
+  version: '1_89_0'
+  root: '../boost_1_89_0'
+  link: 'https://archives.boost.io/beta/1.89.0.beta1/source/boost_1_89_0_b1.tar.gz'
 
 website-v2-docs:
   root: '../website-v2-docs/build'
@@ -114,6 +114,13 @@ crawlers:
         last-records: 284
         last-words: 34965
         last-lvls: 568
+
+  - name: BoostJson
+    libraries:
+      - key: json
+        last-records: 4377
+        last-words: 81076
+        last-lvls: 18663
 
   - name: BoostPreprocessor
     libraries:
@@ -312,13 +319,13 @@ crawlers:
         last-words: 8278
         last-lvls: 200
 
+  - name: Antora
+    libraries:
       - key: redis
         last-records: 52
         last-words: 7140
         last-lvls: 99
 
-  - name: Antora
-    libraries:
       - key: unordered
         last-records: 2680
         last-words: 205084
@@ -647,11 +654,6 @@ crawlers:
         last-records: 648
         last-words: 148179
         last-lvls: 2126
-
-      - key: json
-        last-records: 4377
-        last-words: 81076
-        last-lvls: 18663
 
       - key: lambda
         last-records: 63
