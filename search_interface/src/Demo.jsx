@@ -83,7 +83,7 @@ function Demo() {
         onLearnPages={false}
         librariesUrlPrefix={'https://www.boost.io/doc/libs/latest'}
         learnUrlPrefix={'https://www.boost.io/doc/'}
-        librariesAlgoliaIndex={'1_88_0'}
+        librariesAlgoliaIndex={'1_89_0'}
         learnAlgoliaIndex={'learn'}
         alogliaAppId={'D7O1MLLTAF'}
         alogliaApiKey={'44d0c0aac3c738bebb622150d1ec4ebf'}

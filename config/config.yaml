@@ -1,7 +1,7 @@
 boost:
   version: '1_89_0'
   root: '../boost_1_89_0'
-  link: 'https://archives.boost.io/beta/1.89.0.beta1/source/boost_1_89_0_b1.tar.gz'
+  link: 'https://archives.boost.io/release/1.89.0/source/boost_1_89_0_rc1.tar.gz'
 
 website-v2-docs:
   root: '../website-v2-docs/build'
@@ -119,7 +119,7 @@ crawlers:
     libraries:
       - key: json
         last-records: 524
-        last-words: 59668
+        last-words: 59676
         last-lvls: 1389
 
   - name: BoostPreprocessor
@@ -323,7 +323,7 @@ crawlers:
     libraries:
       - key: redis
         last-records: 760
-        last-words: 15323
+        last-words: 15285
         last-lvls: 1701
 
       - key: unordered
@@ -332,9 +332,9 @@ crawlers:
         last-lvls: 14844
 
       - key: url
-        last-records: 6638
-        last-words: 112995
-        last-lvls: 12319
+        last-records: 6637
+        last-words: 110866
+        last-lvls: 12317
 
   - name: AsciiDoc
     libraries:
@@ -347,6 +347,11 @@ crawlers:
         last-records: 21
         last-words: 1467
         last-lvls: 37
+
+      - key: bloom
+        last-records: 112
+        last-words: 11646
+        last-lvls: 309
 
       - key: charconv
         last-records: 80
@@ -466,9 +471,9 @@ crawlers:
         last-lvls: 196
 
       - key: asio
-        last-records: 10296
-        last-words: 388714
-        last-lvls: 37706
+        last-records: 10298
+        last-words: 388871
+        last-lvls: 37712
 
       - key: atomic
         last-records: 81
@@ -477,7 +482,7 @@ crawlers:
 
       - key: beast
         last-records: 4877
-        last-words: 161313
+        last-words: 161318
         last-lvls: 18468
 
       - key: bimap
@@ -616,9 +621,9 @@ crawlers:
         last-lvls: 7006
 
       - key: geometry
-        last-records: 2557
-        last-words: 87571
-        last-lvls: 10742
+        last-records: 2558
+        last-words: 87654
+        last-lvls: 10744
 
       - key: heap
         last-records: 91
@@ -676,9 +681,9 @@ crawlers:
         last-lvls: 113
 
       - key: log
-        last-records: 1736
-        last-words: 118388
-        last-lvls: 7458
+        last-records: 1741
+        last-words: 119576
+        last-lvls: 7476
 
       - key: math
         last-records: 1976
@@ -722,7 +727,7 @@ crawlers:
 
       - key: mqtt5
         last-records: 626
-        last-words: 28285
+        last-words: 28327
         last-lvls: 2014
 
       - key: numeric/conversion
@@ -741,9 +746,9 @@ crawlers:
         last-lvls: 185
 
       - key: parser
-        last-records: 592
-        last-words: 62377
-        last-lvls: 575
+        last-records: 593
+        last-words: 62846
+        last-lvls: 577
 
       - key: pfr
         last-records: 129

@@ -48,6 +48,10 @@ export const libraries = [
     name: 'Bind',
   },
   {
+    key: 'bloom',
+    name: 'Bloom',
+  },
+  {
     key: 'crc',
     name: 'CRC',
   },
