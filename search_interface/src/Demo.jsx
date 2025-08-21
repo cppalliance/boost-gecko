@@ -28,13 +28,13 @@ function Demo() {
 
   return (
     <Container maxWidth='md'>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container sx={{ width: '100%' }} spacing={2}>
+        <Grid size={{ xs:12 }}>
           <Link variant='h6' underline='none' href='https://github.com/cppalliance/boost-gecko'>
             Boost.Gecko
           </Link>
         </Grid>
-        <Grid item md={2} xs={3}>
+        <Grid size={{ xs:3, md:2 }}>
           <FormControl fullWidth>
             <InputLabel>Theme</InputLabel>
             <Select size='small' value={themeMode} onChange={handleModeChange} label='Theme' sx={{ height: 36 }}>
@@ -43,7 +43,7 @@ function Demo() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item md={8} xs={5}>
+        <Grid size={{ xs:5, md:8 }}>
           <FormControl fullWidth>
             <InputLabel>Library</InputLabel>
             <Select
@@ -64,7 +64,7 @@ function Demo() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item md={2} xs={4}>
+        <Grid size={{ xs:14, md:2 }}>
           <Button
             fullWidth
             sx={{ textTransform: 'none' }}

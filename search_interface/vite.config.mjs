@@ -8,9 +8,11 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        entryFileNames: 'boost-gecko.min.js',
-        assetFileNames: '[name].[ext]'
+        entryFileNames: 'main.[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[hash].[ext]'
       }
-    }
+    },
+    sourcemap: true
   }
 });

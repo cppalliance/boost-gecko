@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import RecentSearches from 'recent-searches';
 
-import algoliasearch from 'algoliasearch/lite';
+import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Index, Configure, PoweredBy } from 'react-instantsearch';
 
 import CppallianceLogo from './CppallianceLogo';
@@ -147,18 +147,18 @@ function SearchDialog({
           maxWidth='md'
           open={dialogOpen}
           onClose={handleDialogClose}
-          PaperProps={{ style: dialogShouldBeFullScreen ? {} : { height: '95vh' } }}
+          slotProps={{ paper: { style: dialogShouldBeFullScreen ? {} : { height: '95vh' } } }}
           sx={{ zIndex: 99999 }}
         >
           <DialogTitle sx={{ p: 1.5, pb: 0, color: theme.palette.text.primary }}>
-            <Grid container spacing={1}>
-              <Grid item xs>
+            <Grid container sx={{ width: '100%' }} spacing={1}>
+              <Grid size="grow">
                 <SearchBox
                   inputRef={inputRef}
                   recentSearches={inputRef.current ? recentSearches.getRecentSearches(inputRef.current.value) : []}
                 />
               </Grid>
-              <Grid item>
+              <Grid>
                 <Button
                   onClick={handleDialogClose}
                   size='small'
@@ -169,7 +169,7 @@ function SearchDialog({
                   Esc
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs:12 }}>
                 {versionWarning && (
                   <Typography variant='caption' sx={{ display: 'block' }}>
                     <Box component='span' fontWeight='bolder'>
@@ -286,11 +286,11 @@ function SearchDialog({
             )}
           </DialogContent>
           <DialogActions sx={{ pc: 1.5, py: 0.5 }}>
-            <Grid container>
-              <Grid item xs={6}>
+            <Grid container sx={{ width: '100%' }}>
+              <Grid size={{ xs:6 }}>
                 <PoweredBy theme={theme.palette.mode} style={{ width: 140, paddingTop: 12 }} />
               </Grid>
-              <Grid item xs={6} sx={{ textAlign: 'right' }}>
+              <Grid size={{ xs:6 }} sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ textTransform: 'none' }}
                   target='_blank'
