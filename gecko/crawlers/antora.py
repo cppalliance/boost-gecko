@@ -37,6 +37,9 @@ class Antora(Crawler):
     def _extract_section_n(self, file_path: str, sections: dict, sect: Tag, lvls: list = []):
         header = sect.select_one('h1, h2, h3, h4, h5, h6')
 
+        if not header:
+            return
+
         if header.name == 'h1':
             path = file_path
         else:
