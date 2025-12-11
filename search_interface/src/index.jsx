@@ -77,6 +77,8 @@ function parseURL() {
   path = path.replace('doc/html/boost_', '');
   path = path.replace('doc/html/boost/', '');
   path = path.replace('doc/html/', '');
+
+  const is_in_lib_dir = path.startsWith('libs/');
   path = path.replace('libs/', '');
 
   // First we try to match libraries like functional/factory and numeric/odeint
@@ -93,6 +95,13 @@ function parseURL() {
   if (!library) {
     const match = path.match(/BOOST_([^_]+)/);
     if (match && match[1]) library = libraries.filter((i) => i.key === match[1].toLowerCase())[0];
+  }
+
+  if(!library && is_in_lib_dir)
+  {
+    const match = path.match(/^[^/]+/);
+    console.log(match);
+    if (match && match[0]) library = { key: match[0], name: match[0] };
   }
 
   boostVersion = boostVersion.replace('boost_', '');

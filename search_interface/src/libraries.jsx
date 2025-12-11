@@ -372,6 +372,10 @@ export const libraries = [
     name: 'Optional',
   },
   {
+    key: 'openmethod',
+    name: 'OpenMethod',
+  },
+  {
     key: 'outcome',
     name: 'Outcome',
   },
