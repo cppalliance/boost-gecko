@@ -34,17 +34,8 @@ function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
   }, [urlPrefix, onClick, hierarchy, _highlightResult]);
 
   return (
-    <Box
-      sx={{
-        wordWrap: 'break-word',
-        '& mark': {
-          color: 'inherit',
-          bgcolor: 'inherit',
-          fontWeight: 'bolder',
-        },
-      }}
-    >
-      <Breadcrumbs separator='&rsaquo;' sx={{ wordBreak: 'break-all' }}>
+    <Box className="search-modal__hit">
+      <Breadcrumbs className="search-modal__breadcrumbs" separator='&rsaquo;'>
         {(showLibName || hierarchyLinks.length === 0) && (
           <Link underline='hover' href={urlJoin(urlPrefix, 'libs', library_key)}>
             {library_name}
@@ -52,7 +43,12 @@ function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
         )}
         {hierarchyLinks}
       </Breadcrumbs>
-      <Snippet style={{ color: theme.palette.text.secondary }} hit={hit} attribute='content' />
+      <Snippet
+        classNames={{ root: 'search-modal__snippet' }}
+        style={{ color: theme.palette.text.secondary }}
+        hit={hit}
+        attribute='content'
+      />
     </Box>
   );
 }
@@ -110,10 +106,10 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack className="search-modal__hits-stack" spacing={2}>
       {memoizedHits}
-      <Box textAlign='center'>
-        <Button disabled={isLastPage} onClick={showMore} sx={{ textTransform: 'none' }}>
+      <Box className="search-modal__show-more-wrapper" textAlign='center'>
+        <Button className="search-modal__show-more" disabled={isLastPage} onClick={showMore}>
           Show More
         </Button>
       </Box>

@@ -13,7 +13,7 @@ import { useSearchBox, useInstantSearch } from 'react-instantsearch';
 
 let queryHookTimerId;
 
-function SearchBox({ inputRef, recentSearches }) {
+function SearchBox({ inputRef, recentSearches, onQueryChange }) {
   const theme = useTheme();
   const queryHook = React.useCallback((query, search) => {
     clearTimeout(queryHookTimerId);
@@ -30,8 +30,17 @@ function SearchBox({ inputRef, recentSearches }) {
       size='small'
       options={recentSearches.map((option) => option.query)}
       value={currentRefinement}
-      onInputChange={(e, newValue) => refine(newValue)}
-      onChange={(e, newValue) => refine(newValue || '')}
+      onInputChange={(e, newValue) => {
+        const trimmed = (newValue || '').trim();
+        onQueryChange?.(trimmed.length > 0);
+        refine(newValue);
+      }}
+      onChange={(e, newValue) => {
+        const nextValue = newValue || '';
+        const trimmed = nextValue.trim();
+        onQueryChange?.(trimmed.length > 0);
+        refine(nextValue);
+      }}
       renderOption={(props, option) => (
         <Box {...props}>
           <HistoryIcon sx={{ mr: 1.5, color: theme.palette.text.secondary }} />
@@ -41,27 +50,36 @@ function SearchBox({ inputRef, recentSearches }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          sx={{
-            '& input:focus': {
-              boxShadow: 'none',
-            },
-          }}
           placeholder='Search...'
           inputRef={inputRef}
-          InputProps={{
-            ...params.InputProps,
-            style: { fontSize: '1.2rem' },
-            endAdornment: (
-              <React.Fragment>
-                {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              className: `${params.InputProps.className || ''} search-modal__input-wrapper`.trim(),
+              endAdornment: (
+                <React.Fragment>
+                  {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
+                  <InputAdornment className="search-modal__input-adornment search-modal__end-adornment" position='end'>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path
+                        d="M2.66699 7.33337V8.66671H10.667V10H12.0003V8.66671H13.3337V7.33337H12.0003V6.00004H10.667V7.33337H2.66699ZM9.33366 4.66671H10.667V6.00004H9.33366V4.66671ZM9.33366 4.66671H8.00033V3.33337H9.33366V4.66671ZM9.33366 11.3334H10.667V10H9.33366V11.3334ZM9.33366 11.3334H8.00033V12.6667H9.33366V11.3334Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </InputAdornment>
+                  {params.InputProps.endAdornment}
+                </React.Fragment>
+              ),
+              startAdornment: (
+                <InputAdornment className="search-modal__input-adornment" position='start'>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+            htmlInput: {
+              ...params.inputProps,
+              className: `${params.inputProps.className || ''} search-modal__input`.trim(),
+            },
           }}
         />
       )}

@@ -12,18 +12,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
-import SvgIcon from '@mui/material/SvgIcon';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 import RecentSearches from 'recent-searches';
 
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, Index, Configure, PoweredBy } from 'react-instantsearch';
+import { InstantSearch, Index, Configure } from 'react-instantsearch';
 
-import CppallianceLogo from './CppallianceLogo';
 import SearchBox from './SearchBox';
 import InfiniteHits from './InfiniteHits';
+import './search-modal.css';
+import PoweredByFooterBrand from './PoweredByFooterBrand';
 
 function SearchDialog({
   themeMode,
@@ -76,6 +76,7 @@ function SearchDialog({
 
   const [nbHits1, setnbHits1] = React.useState(0);
   const [nbHits2, setnbHits2] = React.useState(0);
+  const [hasQuery, setHasQuery] = React.useState(false);
   const kFormatter = (num) => (num > 999 ? (num / 1000).toFixed(1) + 'k' : num);
 
   const handleTabChange = React.useCallback((event, newValue) => setSelectedTab(newValue), []);
@@ -147,23 +148,31 @@ function SearchDialog({
           maxWidth='md'
           open={dialogOpen}
           onClose={handleDialogClose}
-          slotProps={{ paper: { style: dialogShouldBeFullScreen ? {} : { height: '95vh' } } }}
+          slotProps={{
+            backdrop: { className: 'search-modal__backdrop' },
+            container: { className: 'search-modal__container' },
+            paper: {
+              className: 'search-modal__dialog',
+              style: dialogShouldBeFullScreen ? {} : { height: '95vh' },
+            },
+          }}
           sx={{ zIndex: 99999 }}
         >
-          <DialogTitle sx={{ p: 1.5, pb: 0, color: theme.palette.text.primary }}>
-            <Grid container sx={{ width: '100%' }} spacing={1}>
+          <DialogTitle className="search-modal__title">
+            <Grid container className="search-modal__title-grid" spacing={1}>
               <Grid size="grow">
                 <SearchBox
                   inputRef={inputRef}
                   recentSearches={inputRef.current ? recentSearches.getRecentSearches(inputRef.current.value) : []}
+                  onQueryChange={setHasQuery}
                 />
               </Grid>
               <Grid>
                 <Button
+                  className="search-modal__esc-button"
                   onClick={handleDialogClose}
                   size='small'
                   variant='outlined'
-                  sx={{ pt: 0.8, minWidth: 44, height: 44, textTransform: 'none', flexDirection: 'column' }}
                 >
                   <CloseIcon fontSize='inherit' />
                   Esc
@@ -171,8 +180,8 @@ function SearchDialog({
               </Grid>
               <Grid size={{ xs:12 }}>
                 {versionWarning && (
-                  <Typography variant='caption' sx={{ display: 'block' }}>
-                    <Box component='span' fontWeight='bolder'>
+                  <Typography className="search-modal__tip" variant='caption'>
+                    <Box className="search-modal__tip-label" component='span'>
                       Note:
                     </Box>{' '}
                     search limited to the latest version of documentation.
@@ -180,33 +189,43 @@ function SearchDialog({
                 )}
                 {!library ? (
                   <>
-                    <Typography variant='caption' sx={{ display: 'block' }}>
-                      <Box component='span' fontWeight='bolder'>
+                    <Typography className="search-modal__tip" variant='caption'>
+                      <Box className="search-modal__tip-label" component='span'>
                         Tip:
                       </Box>{' '}
                       limit the search scope by navigating to a library page.
                     </Typography>
                     <Tabs
+                      className="search-modal__tabs"
                       value={selectedTab}
                       onChange={handleTabChange}
                       variant='fullWidth'
-                      sx={{ borderBottom: 1, borderColor: 'divider' }}
                     >
                       <Tab
+                        className="search-modal__tab"
                         value='1'
-                        sx={{ textTransform: 'none', display: 'inline' }}
                         label={
                           <>
-                            Libraries <Typography variant='caption'>({kFormatter(nbHits1)})</Typography>
+                            Libraries{' '}
+                            {hasQuery && nbHits1 > 0 ? (
+                              <Typography className="search-modal__tab-count" variant='caption'>
+                                ({kFormatter(nbHits1)})
+                              </Typography>
+                            ) : null}
                           </>
                         }
                       />
                       <Tab
+                        className="search-modal__tab"
                         value='2'
-                        sx={{ textTransform: 'none', display: 'inline' }}
                         label={
                           <>
-                            Learn <Typography variant='caption'>({kFormatter(nbHits2)})</Typography>
+                            Learn{' '}
+                            {hasQuery && nbHits2 > 0 ? (
+                              <Typography className="search-modal__tab-count" variant='caption'>
+                                ({kFormatter(nbHits2)})
+                              </Typography>
+                            ) : null}
                           </>
                         }
                       />
@@ -214,26 +233,36 @@ function SearchDialog({
                   </>
                 ) : (
                   <Tabs
+                    className="search-modal__tabs"
                     value={selectedTab}
                     onChange={handleTabChange}
                     variant='fullWidth'
-                    sx={{ borderBottom: 1, borderColor: 'divider' }}
                   >
                     <Tab
+                      className="search-modal__tab"
                       value='1'
-                      sx={{ textTransform: 'none', display: 'inline' }}
                       label={
                         <>
-                          {library.name} <Typography variant='caption'>({kFormatter(nbHits1)})</Typography>
+                          {library.name}{' '}
+                          {hasQuery && nbHits1 > 0 ? (
+                            <Typography className="search-modal__tab-count" variant='caption'>
+                              ({kFormatter(nbHits1)})
+                            </Typography>
+                          ) : null}
                         </>
                       }
                     />
                     <Tab
+                      className="search-modal__tab"
                       value='2'
-                      sx={{ textTransform: 'none', display: 'inline' }}
                       label={
                         <>
-                          Other Libraries <Typography variant='caption'>({kFormatter(nbHits2)})</Typography>
+                          Other Libraries{' '}
+                          {hasQuery && nbHits2 > 0 ? (
+                            <Typography className="search-modal__tab-count" variant='caption'>
+                              ({kFormatter(nbHits2)})
+                            </Typography>
+                          ) : null}
                         </>
                       }
                     />
@@ -242,10 +271,10 @@ function SearchDialog({
               </Grid>
             </Grid>
           </DialogTitle>
-          <DialogContent sx={{ p: 1.5 }}>
+          <DialogContent className="search-modal__content">
             {!library ? (
               <>
-                <Box hidden={selectedTab !== '1'} sx={{ pt: 1, typography: 'body1' }}>
+                <Box className="search-modal__tab-panel" hidden={selectedTab !== '1'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={librariesAlgoliaIndex}>
                     <Configure hitsPerPage={30} />
                     <InfiniteHits
@@ -256,7 +285,7 @@ function SearchDialog({
                     />
                   </Index>
                 </Box>
-                <Box hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
+                <Box className="search-modal__tab-panel" hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={learnAlgoliaIndex}>
                     <Configure hitsPerPage={30} />
                     <InfiniteHits urlPrefix={learnUrlPrefix} setnbHits={setnbHits2} onClick={setRecentSearch} />
@@ -265,13 +294,13 @@ function SearchDialog({
               </>
             ) : (
               <>
-                <Box hidden={selectedTab !== '1'} sx={{ pt: 1, typography: 'body1' }}>
+                <Box className="search-modal__tab-panel" hidden={selectedTab !== '1'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={librariesAlgoliaIndex}>
                     <Configure hitsPerPage={30} filters={'library_key:' + library.key} />
                     <InfiniteHits urlPrefix={librariesUrlPrefix} setnbHits={setnbHits1} onClick={setRecentSearch} />
                   </Index>
                 </Box>
-                <Box hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
+                <Box className="search-modal__tab-panel" hidden={selectedTab !== '2'} sx={{ pt: 1, typography: 'body1' }}>
                   <Index indexName={librariesAlgoliaIndex}>
                     <Configure hitsPerPage={30} filters={'NOT library_key:' + library.key} />
                     <InfiniteHits
@@ -285,22 +314,22 @@ function SearchDialog({
               </>
             )}
           </DialogContent>
-          <DialogActions sx={{ pc: 1.5, py: 0.5 }}>
-            <Grid container sx={{ width: '100%' }}>
-              <Grid size={{ xs:6 }}>
-                <PoweredBy theme={theme.palette.mode} style={{ width: 140, paddingTop: 12 }} />
-              </Grid>
-              <Grid size={{ xs:6 }} sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ textTransform: 'none' }}
-                  target='_blank'
-                  href='https://github.com/cppalliance/boost-gecko/issues'
-                  startIcon={<SvgIcon component={CppallianceLogo} inheritViewBox />}
+          <DialogActions className="search-modal__footer">
+            <div className="search-modal__footer-grid">
+              <div className="search-modal__footer-cell search-modal__footer-cell--label">
+                <PoweredByFooterBrand style={{ width: 200, height: 44 }} />
+              </div>
+              <div className="search-modal__footer-cell">
+                <a
+                  className="search-modal__report-link"
+                  href="https://github.com/cppalliance/boost-gecko/issues"
+                  target="_blank"
+                  rel="noreferrer noopener"
                 >
                   Report Issue
-                </Button>
-              </Grid>
-            </Grid>
+                </a>
+              </div>
+            </div>
           </DialogActions>
         </Dialog>
       </ThemeProvider>

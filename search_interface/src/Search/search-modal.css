@@ -1,0 +1,726 @@
+/* =============================================================================
+   SEARCH MODAL – BEM styles for boost-gecko search dialog
+   =============================================================================
+   Block: .search-modal
+   Migrated from static/css/v3/search-modal.css (html.v3 .Mui* overrides)
+
+   Structure (search for "Section N" to jump):
+   1   Backdrop & dialog chrome
+   2   Title block        | 2a Search input | 2b Esc | 2c Tabs | 2d Tip
+   3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3d Highlight
+   4   Footer             | 4a Search by   | 4b Report Issue
+   Dark mode at end of file.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   Section 1: Backdrop & dialog chrome
+   -------------------------------------------------------------------------- */
+
+.search-modal__backdrop.MuiBackdrop-root {
+  background-color: var(--color-surface-modal, rgba(5, 8, 22, 0.7)) !important;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.search-modal__container.MuiDialog-container {
+  padding: var(--space-large, 16px);
+}
+
+.search-modal__dialog.MuiDialog-paper {
+  max-height: 700px;
+  height: auto !important;
+  margin: 0 auto;
+  width: 668px !important;
+  max-width: calc(100vw - 32px) !important; /* 16px container padding on both sides */
+  border-radius: var(--border-radius-xl, 12px);
+  --sm-font-sans: var(--font-sans);
+  --sm-font-size-small: var(--font-size-small);
+  --sm-line-height-relaxed: var(--line-height-relaxed);
+  --sm-text-primary: var(--color-text-primary);
+  --sm-text-secondary: var(--color-text-secondary);
+  --sm-text-tertiary: var(--color-text-tertiary);
+  --sm-surface-page: var(--color-surface-page);
+  --sm-surface-weak: var(--color-surface-weak);
+  --sm-surface-modal: var(--color-surface-modal);
+  --sm-stroke-weak: var(--color-stroke-weak);
+  --sm-stroke-mid: var(--color-stroke-mid);
+  --sm-stroke-strong: var(--color-stroke-strong);
+  --sm-border-radius-s: var(--border-radius-s);
+  background: var(--sm-surface-page);
+  color: var(--sm-text-primary);
+  overflow: hidden;
+  /* Match v3 typography */
+  font-family: var(--sm-font-sans) !important;
+}
+
+/* Ensure MUI typography/buttons also use the same font */
+.search-modal__dialog.MuiDialog-paper .MuiTypography-root,
+.search-modal__dialog.MuiDialog-paper .MuiButton-root,
+.search-modal__dialog.MuiDialog-paper .MuiTab-root {
+  font-family: var(--sm-font-sans) !important;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2: Title block (search input row + tip + tabs)
+   -------------------------------------------------------------------------- */
+
+.search-modal__title.MuiDialogTitle-root {
+  padding: var(--space-large, 16px);
+  padding-bottom: 0;
+}
+
+.search-modal__title-grid {
+  align-items: flex-start;
+  gap: var(--space-s, 4px);
+}
+
+.search-modal__title-grid > .MuiGrid-root {
+  min-width: 0;
+  margin-top: var(--space-default, 8px);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2a: Search input
+   -------------------------------------------------------------------------- */
+
+.search-modal__input-wrapper,
+.search-modal__input-wrapper.MuiOutlinedInput-root {
+  height: 40px;
+  border-radius: var(--border-radius-xl, 12px);
+  background: var(--sm-surface-weak);
+}
+
+.search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-weak);
+}
+
+.search-modal__input-wrapper:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-mid);
+}
+
+.search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-strong) !important;
+}
+
+/* Remove the "blue focus box" (typically MUI focus ring / box-shadow) */
+.search-modal__input-wrapper:focus-within,
+.search-modal__input-wrapper.Mui-focused {
+  box-shadow: none !important;
+}
+
+.search-modal__input-wrapper:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.search-modal__input:focus,
+.search-modal__input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.search-modal__input {
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__input::placeholder {
+  color: var(--sm-text-secondary);
+  opacity: 1;
+}
+
+/* Icon buttons (submit arrow, close, etc.) */
+.search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
+  color: var(--color-icon-primary, #050816);
+}
+
+.search-modal__dialog.MuiDialog-paper .MuiIconButton-root:hover {
+  color: var(--color-text-link-accent, #00778B);
+}
+
+.search-modal__dialog.MuiDialog-paper .MuiIconButton-root:focus-visible {
+  outline: 2px solid var(--color-stroke-link-accent, #1F3044);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-xs, 2px);
+}
+
+/* Replace modal search icon with pixelarticons search via mask-image */
+.search-modal__input-adornment {
+  position: relative;
+  margin-right: 0;
+}
+
+.search-modal__end-adornment {
+  margin-left: 8px;
+  margin-right: 0;
+  color: var(--color-icon-primary, #050816);
+}
+
+.search-modal__end-adornment svg {
+  visibility: visible;
+}
+
+.search-modal__end-adornment::before {
+  content: none !important;
+}
+
+.search-modal__input-adornment:not(.search-modal__end-adornment) svg {
+  visibility: hidden;
+}
+
+.search-modal__input-adornment:not(.search-modal__end-adornment)::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M6 2h8v2H6V2zM4 6V4h2v2H4zm0 8H2V6h2v8zm2 2H4v-2h2v2zm8 0v2H6v-2h8zm2-2h-2v2h2v2h2v2h2v2h2v-2h-2v-2h-2v-2h-2v-2zm0-8h2v8h-2V6zm0 0V4h-2v2h2z'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M6 2h8v2H6V2zM4 6V4h2v2H4zm0 8H2V6h2v8zm2 2H4v-2h2v2zm8 0v2H6v-2h8zm2-2h-2v2h2v2h2v2h2v2h2v-2h-2v-2h-2v-2h-2v-2zm0-8h2v8h-2V6zm0 0V4h-2v2h2z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2b: Esc button
+   -------------------------------------------------------------------------- */
+
+.search-modal__esc-button.MuiButton-root {
+  height: 40px;
+  min-width: 54px;
+  padding: 0 var(--space-large, 16px);
+  border: 1px solid var(--sm-stroke-weak);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-secondary);
+  border-radius: var(--border-radius-xl, 12px);
+  text-transform: none;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+}
+
+.search-modal__esc-button:hover {
+  border-color: var(--sm-stroke-mid);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-primary);
+}
+
+.search-modal__esc-button .MuiSvgIcon-root {
+  display: none;
+}
+
+.search-modal__esc-button:focus-visible {
+  outline: 2px solid var(--color-stroke-link-accent, #1F3044);
+  outline-offset: 2px;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2c: Tabs (Libraries / Learn)
+   -------------------------------------------------------------------------- */
+
+.search-modal__tabs.MuiTabs-root {
+  min-height: unset;
+  border-bottom: none;
+}
+
+.search-modal__tabs .MuiTabs-list.MuiTabs-flexContainer {
+  gap: var(--space-s, 4px);
+}
+
+.search-modal__tabs .MuiTabs-indicator {
+  display: none;
+}
+
+.search-modal__tab.MuiTab-root {
+  min-height: unset;
+  padding: var(--space-default, 8px);
+  border-radius: var(--border-radius-l, 8px);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  text-transform: none;
+  display: inline;
+}
+
+.search-modal__tab.Mui-selected {
+  background: var(--color-surface-strong, #efeff1);
+  color: var(--color-text-primary, #050816);
+}
+
+.search-modal__tab:not(.Mui-selected) {
+  color: var(--color-text-tertiary, #71737b);
+  border: 1px solid var(--color-stroke-mid, #0508162B);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2d: Tip row
+   -------------------------------------------------------------------------- */
+
+.search-modal__tip {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  color: var(--color-text-secondary, #585a64);
+  padding-top: var(--space-default, 8px);
+  padding-bottom: var(--space-default, 8px);
+  display: none;
+}
+
+.search-modal__tip-label {
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-text-primary, #050816);
+}
+
+/* Counts inside tabs */
+.search-modal__tab-count {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  color: inherit;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3: Content area (scrollable hit list)
+   -------------------------------------------------------------------------- */
+
+.search-modal__content.MuiDialogContent-root {
+  padding: 0 var(--space-large, 16px);
+  background: var(--color-surface-page, #f7fdfe);
+  overflow: auto;
+  max-height: 320px;
+}
+
+/* Tab panel wrapper */
+.search-modal__tab-panel {
+  gap: 12px;
+}
+
+/* Hide inactive tab panel */
+.search-modal__tab-panel[hidden] {
+  display: none !important;
+}
+
+/* Result links: pointer cursor, no underline */
+.search-modal__content a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.search-modal__content a:hover {
+  text-decoration: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3a: Show More button
+   -------------------------------------------------------------------------- */
+
+/* Hide disabled show-more button */
+.search-modal__content .search-modal__show-more[disabled] {
+  display: none;
+}
+
+/* Hide empty-state wrapper (the one wrapping a disabled show-more) */
+.search-modal__content .search-modal__show-more-wrapper:has(> .search-modal__show-more[disabled]) {
+  display: none !important;
+}
+
+/* Tab panel with disabled show-more: keep flex layout, no card look */
+.search-modal__tab-panel:has(.search-modal__show-more[disabled]):not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+/* General button styling */
+.search-modal__show-more {
+  border-radius: var(--border-radius-xl, 12px);
+  text-transform: none;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3b: Result list (MuiList / MuiListItem) and content links
+   -------------------------------------------------------------------------- */
+
+.search-modal__content .MuiList-root {
+  padding: 0;
+  margin: 0;
+}
+
+.search-modal__content .MuiListItem-root {
+  padding: 0;
+}
+
+.search-modal__content .MuiListItemText-primary {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__content .MuiListItemText-secondary {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3c: Hit cards (breadcrumbs + ais-Snippet)
+   -------------------------------------------------------------------------- */
+
+.search-modal__hit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-s, 4px);
+  padding: 8px;
+  align-self: stretch;
+  border-radius: var(--sm-border-radius-s);
+  background: var(--sm-surface-weak);
+  word-wrap: break-word;
+  box-sizing: border-box;
+  /* Total box height (includes padding because we use border-box). */
+  height: 63px; /* 55 + 8 */
+}
+
+.search-modal__hit mark {
+  font-weight: var(--font-weight-bold, 700);
+  background: transparent;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__breadcrumbs {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+  word-break: break-all;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-ol {
+  padding: 0;
+  margin: 0;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-separator {
+  padding: 0 var(--space-s, 4px);
+  font-size: 10px;
+  color: inherit;
+}
+
+.search-modal__breadcrumbs a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search-modal__breadcrumbs a:hover {
+  text-decoration: none;
+}
+
+.search-modal__snippet {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-relaxed, 1.24);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary) !important;
+}
+
+.search-modal__snippet .ais-Snippet-highlighted {
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--sm-text-primary);
+}
+
+/* Hit card inner layout (Stack items) */
+.search-modal__hits-stack {
+  /* MUI Stack spacing adds an extra gap on top of our margin rules. */
+  gap: 0 !important;
+}
+
+.search-modal__hits-stack > .search-modal__hit {
+  /* Override MUI Stack spacing, keep total height aligned to .search-modal__hit. */
+  height: 63px; /* 55 + 8 padding (border-box) */
+  padding: 8px;
+  margin-top: 0;
+  margin-bottom: var(--space-default, 8px);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3a (continue): Show More as a list entry
+   -------------------------------------------------------------------------- */
+
+.search-modal__show-more-wrapper {
+  width: 100%;
+  height: 63px; /* matches .search-modal__hit */
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--sm-surface-weak);
+  border-radius: var(--sm-border-radius-s);
+
+  /* Matches our list spacing (the previous hit has margin-bottom). */
+  margin: 0;
+}
+
+.search-modal__show-more {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4: Footer (actions)
+   -------------------------------------------------------------------------- */
+
+.search-modal__footer.MuiDialogActions-root {
+  padding: var(--space-default, 8px) var(--space-large, 16px);
+  background: var(--color-surface-page, #f7fdfe);
+}
+
+.search-modal__footer-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-default, 8px);
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+}
+
+.search-modal__footer-cell {
+  display: flex;
+  align-items: center;
+  min-height: 44px; /* ensures both footer "cells" render with identical height */
+}
+
+.search-modal__footer-cell:last-child {
+  justify-content: flex-end;
+}
+
+.search-modal__footer-cell--label {
+  gap: 8px;
+}
+
+.search-modal__footer-label {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+  text-decoration: none;
+  text-transform: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4a: Algolia "Powered by" in footer
+   -------------------------------------------------------------------------- */
+
+.search-modal__footer.MuiDialogActions-root .ais-PoweredBy {
+  padding-top: 0 !important;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  margin: 0;
+}
+
+.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--Text-Secondary, #585A64);
+  font-family: var(--Typefaces-Sans, "Mona Sans VF");
+  font-size: var(--Sizes-Small, 14px);
+  font-style: normal;
+  font-weight: 400;
+  height: 100%;
+  width: auto;
+  line-height: 124%;
+  letter-spacing: -0.14px;
+  text-decoration: none;
+}
+
+.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-text {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 124%;
+  letter-spacing: -0.14px;
+}
+
+.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-logo {
+  display: block;
+  width: 62px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4b: Report Issue link (footer)
+   -------------------------------------------------------------------------- */
+
+.search-modal__report-link {
+  justify-content: flex-end;
+  padding: 0;
+  min-width: 0;
+  color: var(--sm-text-secondary);
+  display: flex;
+  align-items: center;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  text-decoration: none;
+  text-transform: none;
+  height: 44px;
+  border-radius: var(--border-radius-xl, 12px);
+}
+
+.search-modal__report-link:hover {
+  text-decoration: underline;
+}
+
+.search-modal__report-link .MuiButton-icon {
+  display: none;
+}
+
+/* ============================================
+   Dark mode
+   ============================================ */
+
+html.dark .search-modal__backdrop.MuiBackdrop-root {
+  background-color: var(--color-surface-modal) !important;
+}
+
+html.dark .search-modal__dialog.MuiDialog-paper,
+html.dark .search-modal__content.MuiDialogContent-root,
+html.dark .search-modal__footer.MuiDialogActions-root {
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+}
+
+html.dark .search-modal__input-wrapper.MuiInputBase-root,
+html.dark .search-modal__input-wrapper.MuiOutlinedInput-root {
+  background: var(--color-surface-weak);
+}
+
+html.dark .search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-stroke-weak);
+}
+
+html.dark .search-modal__input {
+  color: var(--color-text-primary);
+}
+
+html.dark .search-modal__input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}
+
+html.dark .search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
+  color: var(--color-icon-primary);
+}
+
+html.dark .search-modal__esc-button.MuiButton-root {
+  border-color: var(--color-stroke-weak);
+  background: var(--color-surface-weak);
+  color: var(--color-text-secondary);
+}
+
+html.dark .search-modal__esc-button.MuiButton-root:hover {
+  border-color: var(--color-stroke-mid);
+  color: var(--color-text-primary);
+}
+
+html.dark .search-modal__tab.Mui-selected {
+  background: var(--color-surface-strong);
+  color: var(--color-text-primary);
+}
+
+html.dark .search-modal__tab:not(.Mui-selected) {
+  color: var(--color-text-tertiary);
+  border-color: var(--color-stroke-mid);
+}
+
+html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-primary {
+  color: var(--color-text-primary);
+}
+
+html.dark .search-modal__hit {
+  background: var(--color-surface-weak, #fff);
+  color: var(--color-text-primary, #050816);
+}
+
+html.dark .search-modal__hit .search-modal__breadcrumbs,
+html.dark .search-modal__hit .search-modal__breadcrumbs .MuiBreadcrumbs-separator,
+html.dark .search-modal__hit .search-modal__snippet {
+  color: inherit;
+}
+
+html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-secondary {
+  color: var(--color-text-secondary);
+}
+
+html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link,
+html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy--dark .ais-PoweredBy-link {
+  color: var(--color-text-secondary);
+}
+
+html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link {
+  color: var(--Text-Secondary, #585A64);
+}
+
+html.dark .search-modal__report-link {
+  color: var(--color-text-secondary);
+}
+
+html.dark .search-modal__hit mark {
+  color: var(--color-text-primary);
+}
