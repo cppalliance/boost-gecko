@@ -27,12 +27,14 @@
 }
 
 .search-modal__dialog.MuiDialog-paper {
-  max-height: 700px;
-  height: auto !important;
+  max-height: 686px;
+  height: 686px !important;
   margin: 0 auto;
   width: 668px !important;
   max-width: calc(100vw - 32px) !important; /* 16px container padding on both sides */
   border-radius: var(--border-radius-xl, 12px);
+  display: flex;
+  flex-direction: column;
   --sm-font-sans: var(--font-sans);
   --sm-font-size-small: var(--font-size-small);
   --sm-line-height-relaxed: var(--line-height-relaxed);
@@ -53,6 +55,20 @@
   font-family: var(--sm-font-sans) !important;
 }
 
+/* If there are no hit cards (no results), shrink the dialog height. */
+@supports selector(:has(*)) {
+  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(:has(.search-modal__hit)) {
+    height: auto !important;
+    min-height: 0;
+  }
+
+  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(:has(.search-modal__hit)) .search-modal__content.MuiDialogContent-root {
+    flex: 0 0 auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 /* Ensure MUI typography/buttons also use the same font */
 .search-modal__dialog.MuiDialog-paper .MuiTypography-root,
 .search-modal__dialog.MuiDialog-paper .MuiButton-root,
@@ -67,6 +83,7 @@
 .search-modal__title.MuiDialogTitle-root {
   padding: var(--space-large, 16px);
   padding-bottom: 0;
+  flex: 0 0 auto;
 }
 
 .search-modal__title-grid {
@@ -298,8 +315,10 @@
 .search-modal__content.MuiDialogContent-root {
   padding: 0 var(--space-large, 16px);
   background: var(--color-surface-page, #f7fdfe);
+  flex: 1 1 auto;
+  min-height: 0; /* allows this flex child to shrink and scroll correctly */
   overflow: auto;
-  max-height: 320px;
+  max-height: none;
 }
 
 /* Tab panel wrapper */
@@ -406,8 +425,11 @@
   background: var(--sm-surface-weak);
   word-wrap: break-word;
   box-sizing: border-box;
-  /* Total box height (includes padding because we use border-box). */
-  height: 63px; /* 55 + 8 */
+  /*
+    Minimum height to keep the list looking consistent,
+    but allow it to expand when the hit content wraps.
+  */
+  min-height: 55px;
 }
 
 .search-modal__hit mark {
@@ -424,12 +446,21 @@
   line-height: var(--line-height-relaxed, 1.24);
   letter-spacing: -0.14px;
   color: var(--sm-text-primary);
-  word-break: break-all;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .search-modal__breadcrumbs .MuiBreadcrumbs-ol {
   padding: 0;
   margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .search-modal__breadcrumbs .MuiBreadcrumbs-li {
@@ -476,7 +507,7 @@
 
 .search-modal__hits-stack > .search-modal__hit {
   /* Override MUI Stack spacing, keep total height aligned to .search-modal__hit. */
-  height: 63px; /* 55 + 8 padding (border-box) */
+  min-height: 55px;
   padding: 8px;
   margin-top: 0;
   margin-bottom: var(--space-default, 8px);
@@ -488,7 +519,7 @@
 
 .search-modal__show-more-wrapper {
   width: 100%;
-  height: 63px; /* matches .search-modal__hit */
+  min-height: 55px; /* matches .search-modal__hit */
   padding: 0;
 
   display: flex;
@@ -504,7 +535,6 @@
 
 .search-modal__show-more {
   width: 100%;
-  height: 100%;
   min-width: 0;
   padding: 0;
 }
@@ -516,6 +546,7 @@
 .search-modal__footer.MuiDialogActions-root {
   padding: var(--space-default, 8px) var(--space-large, 16px);
   background: var(--color-surface-page, #f7fdfe);
+  flex: 0 0 auto;
 }
 
 .search-modal__footer-grid {
