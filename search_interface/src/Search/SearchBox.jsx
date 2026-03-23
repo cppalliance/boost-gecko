@@ -43,7 +43,18 @@ function SearchBox({ inputRef, recentSearches, onQueryChange }) {
       }}
       renderOption={(props, option) => (
         <Box {...props}>
-          <HistoryIcon sx={{ mr: 1.5, color: theme.palette.text.secondary }} />
+          {/* Clock Icon */}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='24'
+            height='24'
+            viewBox='0 0 24 24'
+            fill='none'
+            aria-hidden='true'
+            className='search-modal__autocomplete-icon'
+          >
+            <path d='M19 3H5V5H3V19H5V21H19V19H21V5H19V3ZM19 5V19H5V5H19ZM11 7H13V13H17V15H11V7Z' fill='#050816' />
+          </svg>
           {option}
         </Box>
       )}
@@ -59,11 +70,18 @@ function SearchBox({ inputRef, recentSearches, onQueryChange }) {
               endAdornment: (
                 <React.Fragment>
                   {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
-                  <InputAdornment className="search-modal__input-adornment search-modal__end-adornment" position='end'>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <InputAdornment className='search-modal__input-adornment search-modal__end-adornment' position='end'>
+                    <svg
+                      width='16'
+                      height='16'
+                      viewBox='0 0 16 16'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                      aria-hidden='true'
+                    >
                       <path
-                        d="M2.66699 7.33337V8.66671H10.667V10H12.0003V8.66671H13.3337V7.33337H12.0003V6.00004H10.667V7.33337H2.66699ZM9.33366 4.66671H10.667V6.00004H9.33366V4.66671ZM9.33366 4.66671H8.00033V3.33337H9.33366V4.66671ZM9.33366 11.3334H10.667V10H9.33366V11.3334ZM9.33366 11.3334H8.00033V12.6667H9.33366V11.3334Z"
-                        fill="currentColor"
+                        d='M2.66699 7.33337V8.66671H10.667V10H12.0003V8.66671H13.3337V7.33337H12.0003V6.00004H10.667V7.33337H2.66699ZM9.33366 4.66671H10.667V6.00004H9.33366V4.66671ZM9.33366 4.66671H8.00033V3.33337H9.33366V4.66671ZM9.33366 11.3334H10.667V10H9.33366V11.3334ZM9.33366 11.3334H8.00033V12.6667H9.33366V11.3334Z'
+                        fill='currentColor'
                       />
                     </svg>
                   </InputAdornment>
@@ -71,7 +89,7 @@ function SearchBox({ inputRef, recentSearches, onQueryChange }) {
                 </React.Fragment>
               ),
               startAdornment: (
-                <InputAdornment className="search-modal__input-adornment" position='start'>
+                <InputAdornment className='search-modal__input-adornment' position='start'>
                   <SearchIcon />
                 </InputAdornment>
               ),

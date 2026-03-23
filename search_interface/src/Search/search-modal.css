@@ -5,12 +5,57 @@
    Migrated from static/css/v3/search-modal.css (html.v3 .Mui* overrides)
 
    Structure (search for "Section N" to jump):
+   0   Design tokens
    1   Backdrop & dialog chrome
    2   Title block        | 2a Search input | 2b Esc | 2c Tabs | 2d Tip
    3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3d Highlight
    4   Footer             | 4a Search by   | 4b Report Issue
    Dark mode at end of file.
    ========================================================================== */
+
+.search-modal__root.MuiDialog-root {
+  z-index: 99999;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 0: Design tokens (these are all prefixed with --sm- to avoid conflicts with global tokens, and to make it clear these are for the search modal specifically)
+   -------------------------------------------------------------------------- */
+
+.search-modal__dialog.MuiDialog-paper {
+  /* ── Typography ── */
+  --sm-font-sans: var(--font-sans, 'Mona Sans VF', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  --sm-font-size-small: var(--font-size-small, 14px);
+  --sm-line-height-relaxed: var(--line-height-relaxed, 1.24);
+  --sm-font-weight-regular: var(--font-weight-regular, 400);
+  --sm-font-weight-medium: var(--font-weight-medium, 500);
+  --sm-font-weight-bold: var(--font-weight-bold, 700);
+  /* ── Text colours ── */
+  --sm-text-primary: var(--color-text-primary, #050816);
+  --sm-text-secondary: var(--color-text-secondary, #585a64);
+  --sm-text-tertiary: var(--color-text-tertiary, #71737b);
+  --sm-text-link-accent: var(--color-text-link-accent, #0077b8);
+  /* ── Surfaces ── */
+  --sm-surface-page: var(--color-surface-page, #f7fdfe);
+  --sm-surface-weak: var(--color-surface-weak, #ffffff);
+  --sm-surface-strong: var(--color-surface-strong, #efeff1);
+  --sm-surface-modal: var(--color-surface-modal, rgba(5, 8, 22, 0.7));
+  /* ── Strokes ── */
+  --sm-stroke-weak: var(--color-stroke-weak, #0508161a);
+  --sm-stroke-mid: var(--color-stroke-mid, #0508162b);
+  --sm-stroke-strong: var(--color-stroke-strong, #05081640);
+  --sm-stroke-link-accent: var(--color-stroke-link-accent, #0077b8);
+  /* ── Icons ── */
+  --sm-icon-primary: var(--color-icon-primary, #050816);
+  /* ── Spacing ── */
+  --sm-space-s: var(--space-s, 4px);
+  --sm-space-default: var(--space-default, 8px);
+  --sm-space-large: var(--space-large, 16px);
+  /* ── Radii ── */
+  --sm-border-radius-xs: var(--border-radius-xs, 2px);
+  --sm-border-radius-s: var(--border-radius-s, 4px);
+  --sm-border-radius-l: var(--border-radius-l, 8px);
+  --sm-border-radius-xl: var(--border-radius-xl, 12px);
+}
 
 /* -----------------------------------------------------------------------------
    Section 1: Backdrop & dialog chrome
@@ -28,41 +73,32 @@
 
 .search-modal__dialog.MuiDialog-paper {
   max-height: 686px;
-  height: 686px !important;
+  height: 686px;
   margin: 0 auto;
-  width: 668px !important;
-  max-width: calc(100vw - 32px) !important; /* 16px container padding on both sides */
-  border-radius: var(--border-radius-xl, 12px);
+  width: 668px;
+  max-width: calc(100vw - 32px); /* 16px container padding on both sides */
+  border-radius: var(--sm-border-radius-xl);
   display: flex;
   flex-direction: column;
-  --sm-font-sans: var(--font-sans);
-  --sm-font-size-small: var(--font-size-small);
-  --sm-line-height-relaxed: var(--line-height-relaxed);
-  --sm-text-primary: var(--color-text-primary);
-  --sm-text-secondary: var(--color-text-secondary);
-  --sm-text-tertiary: var(--color-text-tertiary);
-  --sm-surface-page: var(--color-surface-page);
-  --sm-surface-weak: var(--color-surface-weak);
-  --sm-surface-modal: var(--color-surface-modal);
-  --sm-stroke-weak: var(--color-stroke-weak);
-  --sm-stroke-mid: var(--color-stroke-mid);
-  --sm-stroke-strong: var(--color-stroke-strong);
-  --sm-border-radius-s: var(--border-radius-s);
   background: var(--sm-surface-page);
   color: var(--sm-text-primary);
   overflow: hidden;
-  /* Match v3 typography */
   font-family: var(--sm-font-sans) !important;
 }
 
 /* If there are no hit cards (no results), shrink the dialog height. */
 @supports selector(:has(*)) {
-  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(:has(.search-modal__hit)) {
+  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(
+      :has(.search-modal__hit)
+    ) {
     height: auto !important;
     min-height: 0;
   }
 
-  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(:has(.search-modal__hit)) .search-modal__content.MuiDialogContent-root {
+  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(
+      :has(.search-modal__hit)
+    )
+    .search-modal__content.MuiDialogContent-root {
     flex: 0 0 auto;
     max-height: none;
     overflow: visible;
@@ -76,24 +112,29 @@
   font-family: var(--sm-font-sans) !important;
 }
 
+/* Disable MUI ripple effect on all buttons/tabs */
+.search-modal__dialog .MuiTouchRipple-root {
+  display: none;
+}
+
 /* -----------------------------------------------------------------------------
    Section 2: Title block (search input row + tip + tabs)
    -------------------------------------------------------------------------- */
 
 .search-modal__title.MuiDialogTitle-root {
-  padding: var(--space-large, 16px);
+  padding: var(--sm-space-large);
   padding-bottom: 0;
   flex: 0 0 auto;
+  background: var(--sm-surface-page);
 }
 
 .search-modal__title-grid {
   align-items: flex-start;
-  gap: var(--space-s, 4px);
+  gap: var(--sm-space-default) var(--sm-space-s) !important;
 }
 
 .search-modal__title-grid > .MuiGrid-root {
   min-width: 0;
-  margin-top: var(--space-default, 8px);
 }
 
 /* -----------------------------------------------------------------------------
@@ -103,8 +144,10 @@
 .search-modal__input-wrapper,
 .search-modal__input-wrapper.MuiOutlinedInput-root {
   height: 40px;
-  border-radius: var(--border-radius-xl, 12px);
+  border-radius: var(--sm-border-radius-xl);
   background: var(--sm-surface-weak);
+  padding: 0px var(--sm-space-large) !important;
+  gap: var(--sm-space-default);
 }
 
 .search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
@@ -112,11 +155,15 @@
 }
 
 .search-modal__input-wrapper:hover .MuiOutlinedInput-notchedOutline {
-  border-color: var(--sm-stroke-mid);
+  border-color: var(--sm-stroke-mid) !important;
 }
 
 .search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--sm-stroke-strong) !important;
+  border-color: var(--sm-stroke-mid) !important;
+}
+
+.search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline:hover {
+  border-color: var(--sm-stroke-mid) !important;
 }
 
 /* Remove the "blue focus box" (typically MUI focus ring / box-shadow) */
@@ -137,11 +184,12 @@
 }
 
 .search-modal__input {
-  font-family: var(--sm-font-sans);
-  font-size: var(--sm-font-size-small);
-  line-height: var(--sm-line-height-relaxed);
-  letter-spacing: -0.14px;
-  color: var(--sm-text-primary);
+  font-family: var(--sm-font-sans) !important;
+  font-size: var(--sm-font-size-small) !important;
+  line-height: var(--sm-line-height-relaxed) !important;
+  letter-spacing: -0.14px !important;
+  color: var(--sm-text-primary) !important;
+  padding: 0px !important;
 }
 
 .search-modal__input::placeholder {
@@ -151,29 +199,32 @@
 
 /* Icon buttons (submit arrow, close, etc.) */
 .search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
-  color: var(--color-icon-primary, #050816);
+  color: var(--sm-icon-primary);
 }
 
 .search-modal__dialog.MuiDialog-paper .MuiIconButton-root:hover {
-  color: var(--color-text-link-accent, #00778B);
+  color: var(--sm-text-link-accent);
 }
 
 .search-modal__dialog.MuiDialog-paper .MuiIconButton-root:focus-visible {
-  outline: 2px solid var(--color-stroke-link-accent, #1F3044);
+  outline: 2px solid var(--sm-stroke-link-accent);
   outline-offset: 2px;
-  border-radius: var(--border-radius-xs, 2px);
+  border-radius: var(--sm-border-radius-xs);
 }
 
 /* Replace modal search icon with pixelarticons search via mask-image */
 .search-modal__input-adornment {
   position: relative;
-  margin-right: 0;
+  margin-right: 0px !important;
+  color: var(--sm-icon-primary) !important;
+  width: 16px;
+  height: 16px;
 }
 
 .search-modal__end-adornment {
   margin-left: 8px;
   margin-right: 0;
-  color: var(--color-icon-primary, #050816);
+  color: var(--sm-icon-primary);
 }
 
 .search-modal__end-adornment svg {
@@ -189,7 +240,7 @@
 }
 
 .search-modal__input-adornment:not(.search-modal__end-adornment)::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: 50%;
@@ -207,6 +258,10 @@
   -webkit-mask-size: contain;
 }
 
+.search-modal__autocomplete-icon {
+  margin-right: var(--sm-space-default);
+}
+
 /* -----------------------------------------------------------------------------
    Section 2b: Esc button
    -------------------------------------------------------------------------- */
@@ -214,14 +269,14 @@
 .search-modal__esc-button.MuiButton-root {
   height: 40px;
   min-width: 54px;
-  padding: 0 var(--space-large, 16px);
+  padding: 0 var(--sm-space-large);
   border: 1px solid var(--sm-stroke-weak);
   background: var(--sm-surface-weak);
   color: var(--sm-text-secondary);
-  border-radius: var(--border-radius-xl, 12px);
+  border-radius: var(--sm-border-radius-xl);
   text-transform: none;
   flex-direction: column;
-  font-family: var(--font-sans);
+  font-family: var(--sm-font-sans);
   font-size: var(--sm-font-size-small);
   line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
@@ -238,21 +293,25 @@
 }
 
 .search-modal__esc-button:focus-visible {
-  outline: 2px solid var(--color-stroke-link-accent, #1F3044);
-  outline-offset: 2px;
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
 }
 
 /* -----------------------------------------------------------------------------
    Section 2c: Tabs (Libraries / Learn)
    -------------------------------------------------------------------------- */
 
+.search-modal__tab:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent) !important;
+  outline-offset: -2px;
+}
+
 .search-modal__tabs.MuiTabs-root {
   min-height: unset;
-  border-bottom: none;
 }
 
 .search-modal__tabs .MuiTabs-list.MuiTabs-flexContainer {
-  gap: var(--space-s, 4px);
+  gap: var(--sm-space-s);
 }
 
 .search-modal__tabs .MuiTabs-indicator {
@@ -261,24 +320,29 @@
 
 .search-modal__tab.MuiTab-root {
   min-height: unset;
-  padding: var(--space-default, 8px);
-  border-radius: var(--border-radius-l, 8px);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  line-height: var(--line-height-relaxed, 1.24);
+  padding: var(--sm-space-default);
+  border: 1px solid transparent;
+  border-radius: var(--sm-border-radius-l);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   text-transform: none;
   display: inline;
 }
 
+.search-modal__tab.Mui-selected:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+}
+
 .search-modal__tab.Mui-selected {
-  background: var(--color-surface-strong, #efeff1);
-  color: var(--color-text-primary, #050816);
+  background: var(--sm-surface-strong);
+  color: var(--sm-text-primary) !important;
 }
 
 .search-modal__tab:not(.Mui-selected) {
-  color: var(--color-text-tertiary, #71737b);
-  border: 1px solid var(--color-stroke-mid, #0508162B);
+  color: var(--sm-text-tertiary);
+  border: 1px solid var(--sm-stroke-mid);
 }
 
 /* -----------------------------------------------------------------------------
@@ -286,26 +350,27 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__tip {
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  line-height: var(--line-height-relaxed, 1.24);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
-  color: var(--color-text-secondary, #585a64);
-  padding-top: var(--space-default, 8px);
-  padding-bottom: var(--space-default, 8px);
+  color: var(--sm-text-secondary);
+  padding-top: var(--sm-space-default);
+  padding-bottom: var(--sm-space-default);
   display: none;
 }
 
 .search-modal__tip-label {
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--color-text-primary, #050816);
+  font-weight: var(--sm-font-weight-medium);
+  color: var(--sm-text-primary);
 }
 
 /* Counts inside tabs */
 .search-modal__tab-count {
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  color: inherit;
+  font-family: var(--sm-font-sans) !important;
+  font-size: var(--sm-font-size-small) !important;
+  font-weight: var(--sm-font-weight-medium) !important;
+  color: inherit !important;
 }
 
 /* -----------------------------------------------------------------------------
@@ -313,17 +378,19 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__content.MuiDialogContent-root {
-  padding: 0 var(--space-large, 16px);
-  background: var(--color-surface-page, #f7fdfe);
+  padding: 0 var(--sm-space-large);
+  background: var(--sm-surface-page);
   flex: 1 1 auto;
   min-height: 0; /* allows this flex child to shrink and scroll correctly */
   overflow: auto;
   max-height: none;
+  margin-top: var(--sm-space-default);
 }
 
 /* Tab panel wrapper */
 .search-modal__tab-panel {
   gap: 12px;
+  padding-top: 0px !important;
 }
 
 /* Hide inactive tab panel */
@@ -368,12 +435,26 @@
 
 /* General button styling */
 .search-modal__show-more {
-  border-radius: var(--border-radius-xl, 12px);
-  text-transform: none;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  line-height: var(--line-height-relaxed, 1.24);
+  border-radius: var(--sm-border-radius-l) !important;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
+  border: 1px solid var(--sm-stroke-strong) !important;
+  padding: var(--sm-space-default) !important;
+  color: var(--sm-text-primary) !important;
+  text-transform: none !important;
+}
+
+.search-modal__show-more:hover {
+  border-color: var(--sm-stroke-link-accent) !important;
+  background-color: transparent !important;
+  color: var(--sm-text-link-accent) !important;
+}
+
+.search-modal__show-more:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent) !important;
+  outline-offset: -2px;
 }
 
 /* -----------------------------------------------------------------------------
@@ -391,20 +472,20 @@
 
 .search-modal__content .MuiListItemText-primary {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-relaxed, 1.24);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   color: var(--sm-text-primary);
 }
 
 .search-modal__content .MuiListItemText-secondary {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  font-weight: var(--font-weight-regular, 400);
-  line-height: var(--line-height-relaxed, 1.24);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   color: var(--sm-text-secondary);
 }
@@ -418,8 +499,8 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: var(--space-s, 4px);
-  padding: 8px;
+  gap: var(--sm-space-s);
+  padding: var(--sm-space-default) !important;
   align-self: stretch;
   border-radius: var(--sm-border-radius-s);
   background: var(--sm-surface-weak);
@@ -433,17 +514,17 @@
 }
 
 .search-modal__hit mark {
-  font-weight: var(--font-weight-bold, 700);
+  font-weight: var(--sm-font-weight-bold);
   background: transparent;
   color: var(--sm-text-primary);
 }
 
 .search-modal__breadcrumbs {
   display: block;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-relaxed, 1.24);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   color: var(--sm-text-primary);
   max-width: 100%;
@@ -469,33 +550,46 @@
 }
 
 .search-modal__breadcrumbs .MuiBreadcrumbs-separator {
-  padding: 0 var(--space-s, 4px);
-  font-size: 10px;
-  color: inherit;
+  margin: 0 var(--sm-space-default) !important;
+  color: var(--sm-text-primary);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
 }
 
 .search-modal__breadcrumbs a {
   color: inherit;
   text-decoration: none;
   cursor: pointer;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
+  padding: 1px;
 }
 
 .search-modal__breadcrumbs a:hover {
   text-decoration: none;
 }
 
+.search-modal__breadcrumbs a:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
 .search-modal__snippet {
   display: block;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small, 14px);
-  font-weight: var(--font-weight-regular, 400);
-  line-height: var(--line-height-relaxed, 1.24);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   color: var(--sm-text-secondary) !important;
 }
 
 .search-modal__snippet .ais-Snippet-highlighted {
-  font-weight: var(--font-weight-bold, 700);
+  font-weight: var(--sm-font-weight-bold);
   color: var(--sm-text-primary);
 }
 
@@ -510,7 +604,8 @@
   min-height: 55px;
   padding: 8px;
   margin-top: 0;
-  margin-bottom: var(--space-default, 8px);
+  margin-bottom: var(--sm-space-default);
+  overflow-wrap: anywhere;
 }
 
 /* -----------------------------------------------------------------------------
@@ -519,18 +614,12 @@
 
 .search-modal__show-more-wrapper {
   width: 100%;
-  min-height: 55px; /* matches .search-modal__hit */
   padding: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: var(--sm-surface-weak);
   border-radius: var(--sm-border-radius-s);
-
-  /* Matches our list spacing (the previous hit has margin-bottom). */
-  margin: 0;
+  margin-bottom: var(--sm-space-default) !important;
 }
 
 .search-modal__show-more {
@@ -544,8 +633,8 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__footer.MuiDialogActions-root {
-  padding: var(--space-default, 8px) var(--space-large, 16px);
-  background: var(--color-surface-page, #f7fdfe);
+  padding: 6px 16px 20px 16px;
+  background: var(--sm-surface-page);
   flex: 0 0 auto;
 }
 
@@ -553,16 +642,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-default, 8px);
   width: 100%;
   height: auto;
-  min-height: 44px;
+  /* min-height: 44px; */
 }
 
 .search-modal__footer-cell {
   display: flex;
   align-items: center;
-  min-height: 44px; /* ensures both footer "cells" render with identical height */
+  /* min-height: 44px; ensures both footer "cells" render with identical height */
 }
 
 .search-modal__footer-cell:last-child {
@@ -591,9 +679,8 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__footer.MuiDialogActions-root .ais-PoweredBy {
-  padding-top: 0 !important;
+  padding-top: 6px 16px 16px 20px;
   display: flex;
-  min-height: 44px;
   align-items: center;
   margin: 0;
 }
@@ -602,9 +689,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--Text-Secondary, #585A64);
-  font-family: var(--Typefaces-Sans, "Mona Sans VF");
-  font-size: var(--Sizes-Small, 14px);
+  color: var(--sm-text-secondary);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
   font-style: normal;
   font-weight: 400;
   height: 100%;
@@ -650,8 +737,7 @@
   letter-spacing: -0.14px;
   text-decoration: none;
   text-transform: none;
-  height: 44px;
-  border-radius: var(--border-radius-xl, 12px);
+  border-radius: var(--sm-border-radius-xl);
 }
 
 .search-modal__report-link:hover {
@@ -667,66 +753,66 @@
    ============================================ */
 
 html.dark .search-modal__backdrop.MuiBackdrop-root {
-  background-color: var(--color-surface-modal) !important;
+  background-color: var(--color-surface-modal, rgba(5, 8, 22, 0.7)) !important;
 }
 
 html.dark .search-modal__dialog.MuiDialog-paper,
 html.dark .search-modal__content.MuiDialogContent-root,
 html.dark .search-modal__footer.MuiDialogActions-root {
-  background: var(--color-surface-page);
-  color: var(--color-text-primary);
+  background: var(--sm-surface-page);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__input-wrapper.MuiInputBase-root,
 html.dark .search-modal__input-wrapper.MuiOutlinedInput-root {
-  background: var(--color-surface-weak);
+  background: var(--sm-surface-weak);
 }
 
 html.dark .search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
-  border-color: var(--color-stroke-weak);
+  border-color: var(--sm-stroke-weak);
 }
 
 html.dark .search-modal__input {
-  color: var(--color-text-primary);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__input::placeholder {
-  color: var(--color-text-secondary);
+  color: var(--sm-text-secondary);
   opacity: 1;
 }
 
 html.dark .search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
-  color: var(--color-icon-primary);
+  color: var(--sm-icon-primary);
 }
 
 html.dark .search-modal__esc-button.MuiButton-root {
-  border-color: var(--color-stroke-weak);
-  background: var(--color-surface-weak);
-  color: var(--color-text-secondary);
+  border-color: var(--sm-stroke-weak);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-secondary);
 }
 
 html.dark .search-modal__esc-button.MuiButton-root:hover {
-  border-color: var(--color-stroke-mid);
-  color: var(--color-text-primary);
+  border-color: var(--sm-stroke-mid);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__tab.Mui-selected {
-  background: var(--color-surface-strong);
-  color: var(--color-text-primary);
+  background: var(--sm-surface-strong);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__tab:not(.Mui-selected) {
-  color: var(--color-text-tertiary);
-  border-color: var(--color-stroke-mid);
+  color: var(--sm-text-tertiary);
+  border-color: var(--sm-stroke-mid);
 }
 
 html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-primary {
-  color: var(--color-text-primary);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__hit {
-  background: var(--color-surface-weak, #fff);
-  color: var(--color-text-primary, #050816);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-primary);
 }
 
 html.dark .search-modal__hit .search-modal__breadcrumbs,
@@ -736,22 +822,22 @@ html.dark .search-modal__hit .search-modal__snippet {
 }
 
 html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-secondary {
-  color: var(--color-text-secondary);
+  color: var(--sm-text-secondary);
 }
 
 html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link,
 html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy--dark .ais-PoweredBy-link {
-  color: var(--color-text-secondary);
+  color: var(--sm-text-secondary);
 }
 
 html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link {
-  color: var(--Text-Secondary, #585A64);
+  color: var(--sm-text-secondary);
 }
 
 html.dark .search-modal__report-link {
-  color: var(--color-text-secondary);
+  color: var(--sm-text-secondary);
 }
 
 html.dark .search-modal__hit mark {
-  color: var(--color-text-primary);
+  color: var(--sm-text-primary);
 }

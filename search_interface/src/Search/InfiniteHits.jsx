@@ -34,10 +34,14 @@ function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
   }, [urlPrefix, onClick, hierarchy, _highlightResult]);
 
   return (
-    <Box className="search-modal__hit">
-      <Breadcrumbs className="search-modal__breadcrumbs" separator='&rsaquo;'>
+    <Box className='search-modal__hit'>
+      <Breadcrumbs className='search-modal__breadcrumbs' separator='&gt;'>
         {(showLibName || hierarchyLinks.length === 0) && (
-          <Link underline='hover' href={urlJoin(urlPrefix, 'libs', library_key)}>
+          <Link
+            underline='hover'
+            href={urlJoin(urlPrefix, 'libs', library_key)}
+            className='search-modal__breakcrumbs-link'
+          >
             {library_name}
           </Link>
         )}
@@ -106,10 +110,10 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
   }
 
   return (
-    <Stack className="search-modal__hits-stack" spacing={2}>
+    <Stack className='search-modal__hits-stack' spacing={2}>
       {memoizedHits}
-      <Box className="search-modal__show-more-wrapper" textAlign='center'>
-        <Button className="search-modal__show-more" disabled={isLastPage} onClick={showMore}>
+      <Box className='search-modal__show-more-wrapper' textAlign='center'>
+        <Button className='search-modal__show-more' disabled={isLastPage} onClick={showMore}>
           Show More
         </Button>
       </Box>
