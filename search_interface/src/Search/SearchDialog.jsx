@@ -12,7 +12,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 import RecentSearches from 'recent-searches';
@@ -137,63 +137,83 @@ function SearchDialog({
   );
 
   return (
-    <InstantSearch searchClient={searchClient} future={{ preserveSharedStateOnUnmount: true }}>
-      <ThemeProvider theme={theme}>
-        <Dialog
-          fullScreen={dialogShouldBeFullScreen}
-          disableScrollLock={true}
-          keepMounted={keepDialogMounted}
-          fullWidth
-          disableRestoreFocus
-          maxWidth='md'
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          slotProps={{
-            backdrop: { className: 'search-modal__backdrop' },
-            container: { className: 'search-modal__container' },
-            paper: {
-              className: `search-modal__dialog${dialogShouldBeFullScreen ? ' search-modal__dialog--fullscreen' : ''}`,
-            },
-          }}
-          className='search-modal__root'
-        >
-          <DialogTitle className='search-modal__title'>
-            <Grid container className='search-modal__title-grid' spacing={1}>
-              <Grid size='grow'>
-                <SearchBox
-                  inputRef={inputRef}
-                  recentSearches={inputRef.current ? recentSearches.getRecentSearches(inputRef.current.value) : []}
-                  onQueryChange={setHasQuery}
-                />
-              </Grid>
-              <Grid>
-                <Button
-                  className='search-modal__esc-button'
-                  onClick={handleDialogClose}
-                  size='small'
-                  variant='outlined'
-                >
-                  <CloseIcon fontSize='inherit' />
-                  Esc
-                </Button>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                {versionWarning && (
-                  <Typography className='search-modal__tip' variant='caption'>
-                    <Box className='search-modal__tip-label' component='span'>
-                      Note:
-                    </Box>{' '}
-                    search limited to the latest version of documentation.
-                  </Typography>
-                )}
-                {!library ? (
-                  <>
+    <StyledEngineProvider injectFirst>
+      <InstantSearch searchClient={searchClient} future={{ preserveSharedStateOnUnmount: true }}>
+        <ThemeProvider theme={theme}>
+          <Dialog
+            fullScreen={dialogShouldBeFullScreen}
+            disableScrollLock={true}
+            keepMounted={keepDialogMounted}
+            fullWidth
+            disableRestoreFocus
+            maxWidth='md'
+            open={dialogOpen}
+            onClose={handleDialogClose}
+            slotProps={{
+              backdrop: { className: 'search-modal__backdrop' },
+              container: { className: 'search-modal__container' },
+              paper: {
+                className: `search-modal__dialog${dialogShouldBeFullScreen ? ' search-modal__dialog--fullscreen' : ''}`,
+              },
+            }}
+            className='search-modal__root'
+          >
+            <DialogTitle className='search-modal__title'>
+              <Grid container className='search-modal__title-grid' spacing={1}>
+                <Grid size='grow'>
+                  <SearchBox
+                    inputRef={inputRef}
+                    recentSearches={inputRef.current ? recentSearches.getRecentSearches(inputRef.current.value) : []}
+                    onQueryChange={setHasQuery}
+                  />
+                </Grid>
+                <Grid>
+                  <Button
+                    className='search-modal__esc-button'
+                    onClick={handleDialogClose}
+                    size='small'
+                    variant='outlined'
+                  >
+                    <CloseIcon fontSize='inherit' />
+                    Esc
+                  </Button>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  {versionWarning && (
                     <Typography className='search-modal__tip' variant='caption'>
                       <Box className='search-modal__tip-label' component='span'>
-                        Tip:
+                        Note:
                       </Box>{' '}
-                      limit the search scope by navigating to a library page.
+                      search limited to the latest version of documentation.
                     </Typography>
+                  )}
+                  {!library ? (
+                    <>
+                      <Typography className='search-modal__tip' variant='caption'>
+                        <Box className='search-modal__tip-label' component='span'>
+                          Tip:
+                        </Box>{' '}
+                        limit the search scope by navigating to a library page.
+                      </Typography>
+                      <Tabs
+                        className='search-modal__tabs'
+                        value={selectedTab}
+                        onChange={handleTabChange}
+                        variant='fullWidth'
+                      >
+                        <Tab
+                          className='search-modal__tab'
+                          value='1'
+                          label={<>Libraries {hasQuery && nbHits1 > 0 ? <span>({kFormatter(nbHits1)})</span> : null}</>}
+                        />
+                        <Tab
+                          className='search-modal__tab'
+                          value='2'
+                          label={<>Learn {hasQuery && nbHits2 > 0 ? <span>({kFormatter(nbHits2)})</span> : null}</>}
+                        />
+                      </Tabs>
+                    </>
+                  ) : (
                     <Tabs
                       className='search-modal__tabs'
                       value={selectedTab}
@@ -205,12 +225,7 @@ function SearchDialog({
                         value='1'
                         label={
                           <>
-                            Libraries{' '}
-                            {hasQuery && nbHits1 > 0 ? (
-                              <Typography className='search-modal__tab-count' variant='caption'>
-                                ({kFormatter(nbHits1)})
-                              </Typography>
-                            ) : null}
+                            {library.name} {hasQuery && nbHits1 > 0 ? <span>({kFormatter(nbHits1)})</span> : null}
                           </>
                         }
                       />
@@ -218,121 +233,90 @@ function SearchDialog({
                         className='search-modal__tab'
                         value='2'
                         label={
-                          <>
-                            Learn{' '}
-                            {hasQuery && nbHits2 > 0 ? (
-                              <Typography className='search-modal__tab-count' variant='caption'>
-                                ({kFormatter(nbHits2)})
-                              </Typography>
-                            ) : null}
-                          </>
+                          <>Other Libraries {hasQuery && nbHits2 > 0 ? <span>({kFormatter(nbHits2)})</span> : null}</>
                         }
                       />
                     </Tabs>
-                  </>
-                ) : (
-                  <Tabs
-                    className='search-modal__tabs'
-                    value={selectedTab}
-                    onChange={handleTabChange}
-                    variant='fullWidth'
-                  >
-                    <Tab
-                      className='search-modal__tab'
-                      value='1'
-                      label={
-                        <>
-                          {library.name}{' '}
-                          {hasQuery && nbHits1 > 0 ? (
-                            <Typography className='search-modal__tab-count' variant='caption'>
-                              ({kFormatter(nbHits1)})
-                            </Typography>
-                          ) : null}
-                        </>
-                      }
-                    />
-                    <Tab
-                      className='search-modal__tab'
-                      value='2'
-                      label={
-                        <>
-                          Other Libraries{' '}
-                          {hasQuery && nbHits2 > 0 ? (
-                            <Typography className='search-modal__tab-count' variant='caption'>
-                              ({kFormatter(nbHits2)})
-                            </Typography>
-                          ) : null}
-                        </>
-                      }
-                    />
-                  </Tabs>
-                )}
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
-          </DialogTitle>
-          <DialogContent className='search-modal__content'>
-            {!library ? (
-              <>
-                <Box className='search-modal__tab-panel' hidden={selectedTab !== '1'}>
-                  <Index indexName={librariesAlgoliaIndex}>
-                    <Configure hitsPerPage={30} />
-                    <InfiniteHits
-                      urlPrefix={librariesUrlPrefix}
-                      setnbHits={setnbHits1}
-                      onClick={setRecentSearch}
-                      showLibName
-                    />
-                  </Index>
-                </Box>
-                <Box className='search-modal__tab-panel' hidden={selectedTab !== '2'}>
-                  <Index indexName={learnAlgoliaIndex}>
-                    <Configure hitsPerPage={30} />
-                    <InfiniteHits urlPrefix={learnUrlPrefix} setnbHits={setnbHits2} onClick={setRecentSearch} />
-                  </Index>
-                </Box>
-              </>
-            ) : (
-              <>
-                <Box className='search-modal__tab-panel' hidden={selectedTab !== '1'}>
-                  <Index indexName={librariesAlgoliaIndex}>
-                    <Configure hitsPerPage={30} filters={'library_key:' + library.key} />
-                    <InfiniteHits urlPrefix={librariesUrlPrefix} setnbHits={setnbHits1} onClick={setRecentSearch} />
-                  </Index>
-                </Box>
-                <Box className='search-modal__tab-panel' hidden={selectedTab !== '2'}>
-                  <Index indexName={librariesAlgoliaIndex}>
-                    <Configure hitsPerPage={30} filters={'NOT library_key:' + library.key} />
-                    <InfiniteHits
-                      urlPrefix={librariesUrlPrefix}
-                      setnbHits={setnbHits2}
-                      onClick={setRecentSearch}
-                      showLibName
-                    />
-                  </Index>
-                </Box>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions className='search-modal__footer'>
-            <div className='search-modal__footer-grid'>
-              <div className='search-modal__footer-cell search-modal__footer-cell--label'>
-                <PoweredByFooterBrand />
+            </DialogTitle>
+            <DialogContent className='search-modal__content'>
+              {!library ? (
+                <>
+                  <Box className='search-modal__tab-panel' hidden={selectedTab !== '1'}>
+                    <Index indexName={librariesAlgoliaIndex}>
+                      <Configure hitsPerPage={30} />
+                      <InfiniteHits
+                        urlPrefix={librariesUrlPrefix}
+                        setnbHits={setnbHits1}
+                        onClick={setRecentSearch}
+                        showLibName
+                        hasQuery={hasQuery}
+                      />
+                    </Index>
+                  </Box>
+                  <Box className='search-modal__tab-panel' hidden={selectedTab !== '2'}>
+                    <Index indexName={learnAlgoliaIndex}>
+                      <Configure hitsPerPage={30} />
+                      <InfiniteHits
+                        urlPrefix={learnUrlPrefix}
+                        setnbHits={setnbHits2}
+                        onClick={setRecentSearch}
+                        hasQuery={hasQuery}
+                      />
+                    </Index>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Box className='search-modal__tab-panel' hidden={selectedTab !== '1'}>
+                    <Index indexName={librariesAlgoliaIndex}>
+                      <Configure hitsPerPage={30} filters={'library_key:' + library.key} />
+                      <InfiniteHits
+                        urlPrefix={librariesUrlPrefix}
+                        setnbHits={setnbHits1}
+                        onClick={setRecentSearch}
+                        hasQuery={hasQuery}
+                      />
+                    </Index>
+                  </Box>
+                  <Box className='search-modal__tab-panel' hidden={selectedTab !== '2'}>
+                    <Index indexName={librariesAlgoliaIndex}>
+                      <Configure hitsPerPage={30} filters={'NOT library_key:' + library.key} />
+                      <InfiniteHits
+                        urlPrefix={librariesUrlPrefix}
+                        setnbHits={setnbHits2}
+                        onClick={setRecentSearch}
+                        showLibName
+                        hasQuery={hasQuery}
+                      />
+                    </Index>
+                  </Box>
+                </>
+              )}
+            </DialogContent>
+            <DialogActions className='search-modal__footer'>
+              <div className='search-modal__footer-grid'>
+                <div className='search-modal__footer-cell search-modal__footer-cell--label'>
+                  <PoweredByFooterBrand />
+                </div>
+                <div className='search-modal__footer-cell'>
+                  <a
+                    className='search-modal__report-link'
+                    href='https://github.com/cppalliance/boost-gecko/issues'
+                    target='_blank'
+                    rel='noreferrer noopener'
+                  >
+                    Report Issue
+                  </a>
+                </div>
               </div>
-              <div className='search-modal__footer-cell'>
-                <a
-                  className='search-modal__report-link'
-                  href='https://github.com/cppalliance/boost-gecko/issues'
-                  target='_blank'
-                  rel='noreferrer noopener'
-                >
-                  Report Issue
-                </a>
-              </div>
-            </div>
-          </DialogActions>
-        </Dialog>
-      </ThemeProvider>
-    </InstantSearch>
+            </DialogActions>
+          </Dialog>
+        </ThemeProvider>
+      </InstantSearch>
+    </StyledEngineProvider>
   );
 }
 

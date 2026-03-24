@@ -2,29 +2,30 @@
    SEARCH MODAL – BEM styles for boost-gecko search dialog
    =============================================================================
    Block: .search-modal
-   Migrated from static/css/v3/search-modal.css (html.v3 .Mui* overrides)
 
    Structure (search for "Section N" to jump):
    0   Design tokens
    1   Backdrop & dialog chrome
    2   Title block        | 2a Search input | 2b Esc | 2c Tabs | 2d Tip
-   3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3d Highlight
-   4   Footer             | 4a Search by   | 4b Report Issue
+   3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3e No results
+   4   Footer             | 4a Powered by  | 4b Report Issue
    Dark mode at end of file.
    ========================================================================== */
 
-.search-modal__root.MuiDialog-root {
-  z-index: 99999;
-}
-
 /* -----------------------------------------------------------------------------
    Section 0: Design tokens (these are all prefixed with --sm- to avoid conflicts with global tokens, and to make it clear these are for the search modal specifically)
+   These are also scoped to the root of the search modal, so they don't affect any other components that might be nested inside (e.g. MUI components)
    -------------------------------------------------------------------------- */
 
-.search-modal__dialog.MuiDialog-paper {
+.search-modal__root.MuiDialog-root {
+  z-index: 99999;
   /* ── Typography ── */
   --sm-font-sans: var(--font-sans, 'Mona Sans VF', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
   --sm-font-size-small: var(--font-size-small, 14px);
+  --sm-font-size-base: var(--font-size-base, 16px);
+  --sm-font-size-medium: var(--font-size-medium, 18px);
+  --sm-font-size-large: var(--font-size-large, 24px);
+  --sm-line-height-default: var(--line-height-default, 1.2);
   --sm-line-height-relaxed: var(--line-height-relaxed, 1.24);
   --sm-font-weight-regular: var(--font-weight-regular, 400);
   --sm-font-weight-medium: var(--font-weight-medium, 500);
@@ -37,6 +38,7 @@
   /* ── Surfaces ── */
   --sm-surface-page: var(--color-surface-page, #f7fdfe);
   --sm-surface-weak: var(--color-surface-weak, #ffffff);
+  --sm-surface-mid: var(--color-surface-mid, #f7f7f8);
   --sm-surface-strong: var(--color-surface-strong, #efeff1);
   --sm-surface-modal: var(--color-surface-modal, rgba(5, 8, 22, 0.7));
   /* ── Strokes ── */
@@ -49,7 +51,9 @@
   /* ── Spacing ── */
   --sm-space-s: var(--space-s, 4px);
   --sm-space-default: var(--space-default, 8px);
+  --sm-space-medium: var(--space-medium, 12px);
   --sm-space-large: var(--space-large, 16px);
+  --sm-space-xl: var(--space-xl, 32px);
   /* ── Radii ── */
   --sm-border-radius-xs: var(--border-radius-xs, 2px);
   --sm-border-radius-s: var(--border-radius-s, 4px);
@@ -58,10 +62,10 @@
 }
 
 /* Ensure MUI typography/buttons also use the same font */
-.search-modal__dialog.MuiDialog-paper .MuiTypography-root,
-.search-modal__dialog.MuiDialog-paper .MuiButton-root,
-.search-modal__dialog.MuiDialog-paper .MuiTab-root {
-  font-family: var(--sm-font-sans) !important;
+.search-modal__dialog .MuiTypography-root,
+.search-modal__dialog .MuiButton-root,
+.search-modal__dialog .MuiTab-root {
+  font-family: var(--sm-font-sans);
 }
 
 /* Disable MUI ripple effect on all buttons/tabs */
@@ -74,13 +78,13 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__backdrop.MuiBackdrop-root {
-  background-color: var(--color-surface-modal, rgba(5, 8, 22, 0.7)) !important;
+  background-color: var(--sm-surface-modal);
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px);
 }
 
 .search-modal__container.MuiDialog-container {
-  padding: var(--space-large, 16px);
+  padding: var(--sm-space-large);
 }
 
 .search-modal__dialog.MuiDialog-paper {
@@ -88,14 +92,14 @@
   height: fit-content;
   margin: 0 auto;
   width: 668px;
-  max-width: calc(100vw - 32px); /* 16px container padding on both sides */
+  max-width: calc(100vw - var(--sm-space-xl)); /* 16px container padding on both sides */
   border-radius: var(--sm-border-radius-xl);
   display: flex;
   flex-direction: column;
   background: var(--sm-surface-page);
   color: var(--sm-text-primary);
   overflow: hidden;
-  font-family: var(--sm-font-sans) !important;
+  font-family: var(--sm-font-sans);
 }
 
 /* -----------------------------------------------------------------------------
@@ -111,7 +115,7 @@
 
 .search-modal__title-grid {
   align-items: flex-start;
-  gap: var(--sm-space-default) var(--sm-space-s) !important;
+  gap: var(--sm-space-default) var(--sm-space-s);
 }
 
 .search-modal__title-grid > .MuiGrid-root {
@@ -136,40 +140,42 @@
 }
 
 .search-modal__input-wrapper:hover .MuiOutlinedInput-notchedOutline {
-  border-color: var(--sm-stroke-mid) !important;
+  border-color: var(--sm-stroke-mid);
 }
 
 .search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--sm-stroke-mid) !important;
+  border-color: var(--sm-stroke-strong);
+  border-width: 1px !important;
 }
 
 .search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline:hover {
-  border-color: var(--sm-stroke-mid) !important;
+  border-color: var(--sm-stroke-mid);
 }
 
 /* Remove the "blue focus box" (typically MUI focus ring / box-shadow) */
 .search-modal__input-wrapper:focus-within,
 .search-modal__input-wrapper.Mui-focused {
-  box-shadow: none !important;
+  box-shadow: none;
+  background-color: var(--sm-surface-mid);
 }
 
 .search-modal__input-wrapper:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
+  outline: none;
+  box-shadow: none;
 }
 
 .search-modal__input:focus,
 .search-modal__input:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
+  outline: none;
+  box-shadow: none;
 }
 
 .search-modal__input {
-  font-family: var(--sm-font-sans) !important;
-  font-size: var(--sm-font-size-small) !important;
-  line-height: var(--sm-line-height-relaxed) !important;
-  letter-spacing: -0.14px !important;
-  color: var(--sm-text-primary) !important;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
   padding: 0px !important;
 }
 
@@ -179,15 +185,15 @@
 }
 
 /* Icon buttons (submit arrow, close, etc.) */
-.search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
+.search-modal__dialog .MuiIconButton-root {
   color: var(--sm-icon-primary);
 }
 
-.search-modal__dialog.MuiDialog-paper .MuiIconButton-root:hover {
+.search-modal__dialog .MuiIconButton-root:hover {
   color: var(--sm-text-link-accent);
 }
 
-.search-modal__dialog.MuiDialog-paper .MuiIconButton-root:focus-visible {
+.search-modal__dialog .MuiIconButton-root:focus-visible {
   outline: 2px solid var(--sm-stroke-link-accent);
   outline-offset: 2px;
   border-radius: var(--sm-border-radius-xs);
@@ -196,14 +202,14 @@
 /* Replace modal search icon with pixelarticons search via mask-image */
 .search-modal__input-adornment {
   position: relative;
-  margin-right: 0px !important;
-  color: var(--sm-icon-primary) !important;
+  margin-right: 0px;
+  color: var(--sm-icon-primary);
   width: 16px;
   height: 16px;
 }
 
 .search-modal__end-adornment {
-  margin-left: 8px;
+  margin-left: var(--sm-space-default);
   margin-right: 0;
   color: var(--sm-icon-primary);
 }
@@ -213,7 +219,7 @@
 }
 
 .search-modal__end-adornment::before {
-  content: none !important;
+  content: none;
 }
 
 .search-modal__input-adornment:not(.search-modal__end-adornment) svg {
@@ -283,7 +289,7 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__tab:focus-visible {
-  outline: 2px solid var(--sm-stroke-link-accent) !important;
+  outline: 2px solid var(--sm-stroke-link-accent);
   outline-offset: -2px;
 }
 
@@ -291,7 +297,7 @@
   min-height: unset;
 }
 
-.search-modal__tabs .MuiTabs-list.MuiTabs-flexContainer {
+.search-modal__tabs .MuiTabs-flexContainer {
   gap: var(--sm-space-s);
 }
 
@@ -318,7 +324,7 @@
 
 .search-modal__tab.Mui-selected {
   background: var(--sm-surface-strong);
-  color: var(--sm-text-primary) !important;
+  color: var(--sm-text-primary);
 }
 
 .search-modal__tab:not(.Mui-selected) {
@@ -346,14 +352,6 @@
   color: var(--sm-text-primary);
 }
 
-/* Counts inside tabs */
-.search-modal__tab-count {
-  font-family: var(--sm-font-sans) !important;
-  font-size: var(--sm-font-size-small) !important;
-  font-weight: var(--sm-font-weight-medium) !important;
-  color: inherit !important;
-}
-
 /* -----------------------------------------------------------------------------
    Section 3: Content area (scrollable hit list)
    -------------------------------------------------------------------------- */
@@ -370,13 +368,13 @@
 
 /* Tab panel wrapper */
 .search-modal__tab-panel {
-  gap: 12px;
-  padding-top: 0px !important;
+  gap: var(--sm-space-medium);
+  padding-top: 0px;
 }
 
 /* Hide inactive tab panel */
 .search-modal__tab-panel[hidden] {
-  display: none !important;
+  display: none;
 }
 
 /* Result links: pointer cursor, no underline */
@@ -400,7 +398,7 @@
 
 /* Hide empty-state wrapper (the one wrapping a disabled show-more) */
 .search-modal__content .search-modal__show-more-wrapper:has(> .search-modal__show-more[disabled]) {
-  display: none !important;
+  display: none;
 }
 
 /* Tab panel with disabled show-more: keep flex layout, no card look */
@@ -416,25 +414,26 @@
 
 /* General button styling */
 .search-modal__show-more {
-  border-radius: var(--sm-border-radius-l) !important;
+  border-radius: var(--sm-border-radius-l);
   font-family: var(--sm-font-sans);
   font-size: var(--sm-font-size-small);
   line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
-  border: 1px solid var(--sm-stroke-strong) !important;
-  padding: var(--sm-space-default) !important;
-  color: var(--sm-text-primary) !important;
-  text-transform: none !important;
+  border: 1px solid var(--sm-stroke-strong);
+  padding: var(--sm-space-default);
+  color: var(--sm-text-primary);
+  text-transform: none;
+  width: 100%;
 }
 
 .search-modal__show-more:hover {
-  border-color: var(--sm-stroke-link-accent) !important;
-  background-color: transparent !important;
-  color: var(--sm-text-link-accent) !important;
+  border-color: var(--sm-stroke-link-accent);
+  background-color: transparent;
+  color: var(--sm-text-link-accent);
 }
 
 .search-modal__show-more:focus-visible {
-  outline: 2px solid var(--sm-stroke-link-accent) !important;
+  outline: 2px solid var(--sm-stroke-link-accent);
   outline-offset: -2px;
 }
 
@@ -481,7 +480,7 @@
   align-items: flex-start;
   justify-content: center;
   gap: var(--sm-space-s);
-  padding: var(--sm-space-default) !important;
+  padding: var(--sm-space-default);
   align-self: stretch;
   border-radius: var(--sm-border-radius-s);
   background: var(--sm-surface-weak);
@@ -531,7 +530,7 @@
 }
 
 .search-modal__breadcrumbs .MuiBreadcrumbs-separator {
-  margin: 0 var(--sm-space-default) !important;
+  margin: 0 var(--sm-space-default);
   color: var(--sm-text-primary);
   font-family: var(--sm-font-sans);
   font-size: var(--sm-font-size-small);
@@ -566,7 +565,7 @@
   font-weight: var(--sm-font-weight-regular);
   line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
-  color: var(--sm-text-secondary) !important;
+  color: var(--sm-text-secondary);
 }
 
 .search-modal__snippet .ais-Snippet-highlighted {
@@ -577,13 +576,13 @@
 /* Hit card inner layout (Stack items) */
 .search-modal__hits-stack {
   /* MUI Stack spacing adds an extra gap on top of our margin rules. */
-  gap: 0 !important;
+  gap: 0;
 }
 
 .search-modal__hits-stack > .search-modal__hit {
   /* Override MUI Stack spacing, keep total height aligned to .search-modal__hit. */
   min-height: 55px;
-  padding: 8px;
+  padding: var(--sm-space-default);
   margin-top: 0;
   margin-bottom: var(--sm-space-default);
   overflow-wrap: anywhere;
@@ -601,15 +600,14 @@
   flex: 1;
   width: 100%;
   height: 192px;
-  gap: 12px;
+  gap: var(--sm-space-medium);
 }
 
 .search-modal__no-results-title {
   margin: 0;
   font-family: var(--sm-font-sans);
-  font-size: 24px;
+  font-size: var(--sm-font-size-large);
   font-weight: var(--sm-font-weight-medium);
-  line-height: 1;
   letter-spacing: -0.24px;
   text-align: center;
   color: var(--sm-text-primary);
@@ -618,9 +616,9 @@
 .search-modal__no-results-subtitle {
   margin: 0;
   font-family: var(--sm-font-sans);
-  font-size: 16px;
+  font-size: var(--sm-font-size-base);
   font-weight: var(--sm-font-weight-regular);
-  line-height: 1.2;
+  line-height: var(--sm-line-height-default);
   letter-spacing: -0.16px;
   text-align: center;
   color: var(--sm-text-secondary);
@@ -637,13 +635,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--sm-border-radius-s);
-  margin-bottom: var(--sm-space-default) !important;
-}
-
-.search-modal__show-more {
-  width: 100%;
-  min-width: 0;
-  padding: 0;
+  margin-bottom: var(--sm-space-default);
 }
 
 /* -----------------------------------------------------------------------------
@@ -651,7 +643,7 @@
    -------------------------------------------------------------------------- */
 
 .search-modal__footer.MuiDialogActions-root {
-  padding: 6px 16px 20px 16px;
+  padding: 6px var(--sm-space-large) 20px var(--sm-space-large);
   background: var(--sm-surface-page);
   flex: 0 0 auto;
 }
@@ -674,7 +666,7 @@
 }
 
 .search-modal__footer-cell--label {
-  gap: 8px;
+  gap: var(--sm-space-default);
 }
 
 .search-modal__footer-label {
@@ -694,17 +686,16 @@
    Section 4a: Algolia "Powered by" in footer
    -------------------------------------------------------------------------- */
 
-.search-modal__footer.MuiDialogActions-root .ais-PoweredBy {
-  padding-top: 6px 16px 16px 20px;
+.search-modal__footer .ais-PoweredBy {
   display: flex;
   align-items: center;
   margin: 0;
 }
 
-.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link {
+.search-modal__footer .ais-PoweredBy-link {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sm-space-default);
   color: var(--sm-text-secondary);
   font-family: var(--sm-font-sans);
   font-size: var(--sm-font-size-small);
@@ -717,7 +708,7 @@
   text-decoration: none;
 }
 
-.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-text {
+.search-modal__footer .ais-PoweredBy-text {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
@@ -727,7 +718,7 @@
   letter-spacing: -0.14px;
 }
 
-.search-modal__footer.MuiDialogActions-root .ais-PoweredBy-logo {
+.search-modal__footer .ais-PoweredBy-logo {
   display: block;
   width: 62px;
   height: 14px;
@@ -769,7 +760,7 @@
    ============================================ */
 
 html.dark .search-modal__backdrop.MuiBackdrop-root {
-  background-color: var(--color-surface-modal, rgba(5, 8, 22, 0.7)) !important;
+  background-color: var(--sm-surface-modal);
 }
 
 html.dark .search-modal__dialog.MuiDialog-paper,
@@ -797,7 +788,7 @@ html.dark .search-modal__input::placeholder {
   opacity: 1;
 }
 
-html.dark .search-modal__dialog.MuiDialog-paper .MuiIconButton-root {
+html.dark .search-modal__dialog .MuiIconButton-root {
   color: var(--sm-icon-primary);
 }
 
@@ -822,7 +813,7 @@ html.dark .search-modal__tab:not(.Mui-selected) {
   border-color: var(--sm-stroke-mid);
 }
 
-html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-primary {
+html.dark .search-modal__content .MuiListItemText-primary {
   color: var(--sm-text-primary);
 }
 
@@ -837,16 +828,16 @@ html.dark .search-modal__hit .search-modal__snippet {
   color: inherit;
 }
 
-html.dark .search-modal__content.MuiDialogContent-root .MuiListItemText-secondary {
+html.dark .search-modal__content .MuiListItemText-secondary {
   color: var(--sm-text-secondary);
 }
 
-html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link,
-html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy--dark .ais-PoweredBy-link {
+html.dark .search-modal__footer .ais-PoweredBy-link,
+html.dark .search-modal__footer .ais-PoweredBy--dark .ais-PoweredBy-link {
   color: var(--sm-text-secondary);
 }
 
-html.dark .search-modal__footer.MuiDialogActions-root .ais-PoweredBy-link {
+html.dark .search-modal__footer .ais-PoweredBy-link {
   color: var(--sm-text-secondary);
 }
 
