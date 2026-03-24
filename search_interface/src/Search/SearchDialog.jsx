@@ -92,6 +92,15 @@ function SearchDialog({
 
   const handleDialogClose = React.useCallback(() => window.history.back(), []);
 
+  React.useEffect(() => {
+    const html = document.documentElement;
+    if (themeMode === 'dark') {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+  }, [themeMode]);
+
   const theme = React.useMemo(
     () =>
       createTheme({

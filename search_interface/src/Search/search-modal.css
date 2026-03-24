@@ -9,7 +9,7 @@
    2   Title block        | 2a Search input | 2b Esc | 2c Tabs | 2d Tip
    3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3e No results
    4   Footer             | 4a Powered by  | 4b Report Issue
-   Dark mode at end of file.
+
    ========================================================================== */
 
 /* -----------------------------------------------------------------------------
@@ -40,7 +40,7 @@
   --sm-surface-weak: var(--color-surface-weak, #ffffff);
   --sm-surface-mid: var(--color-surface-mid, #f7f7f8);
   --sm-surface-strong: var(--color-surface-strong, #efeff1);
-  --sm-surface-modal: var(--color-surface-modal, rgba(5, 8, 22, 0.7));
+  --sm-surface-modal: var(--color-surface-modal, #050816b3);
   /* ── Strokes ── */
   --sm-stroke-weak: var(--color-stroke-weak, #0508161a);
   --sm-stroke-mid: var(--color-stroke-mid, #0508162b);
@@ -59,6 +59,28 @@
   --sm-border-radius-s: var(--border-radius-s, 4px);
   --sm-border-radius-l: var(--border-radius-l, 8px);
   --sm-border-radius-xl: var(--border-radius-xl, 12px);
+}
+
+/* Dark mode overrides (these will apply when the "dark" class is added to the root html element */
+html.dark .search-modal__root.MuiDialog-root {
+  /* ── Text colours ── */
+  --sm-text-primary: var(--color-text-primary, #ffffff);
+  --sm-text-secondary: var(--color-text-secondary, #cacbce);
+  --sm-text-tertiary: var(--color-text-tertiary, #82848a);
+  --sm-text-link-accent: var(--color-text-link-accent, #6dcdf7);
+  /* ── Surfaces ── */
+  --sm-surface-page: var(--color-surface-page, #050816);
+  --sm-surface-weak: var(--color-surface-weak, #1a1c29);
+  --sm-surface-mid: var(--color-surface-mid, #2f313d);
+  --sm-surface-strong: var(--color-surface-strong, #585a64);
+  --sm-surface-modal: var(--color-surface-modal, #0508164d);
+  /* ── Strokes ── */
+  --sm-stroke-weak: var(--color-stroke-weak, #f7f7f81a);
+  --sm-stroke-mid: var(--color-stroke-mid, #f7f7f82b);
+  --sm-stroke-strong: var(--color-stroke-strong, #f7f7f836);
+  --sm-stroke-link-accent: var(--color-stroke-link-accent, #6dcdf7);
+  /* ── Icons ── */
+  --sm-icon-primary: var(--color-icon-primary, #ffffff);
 }
 
 /* Ensure MUI typography/buttons also use the same font */
@@ -721,98 +743,4 @@
 
 .search-modal__report-link .MuiButton-icon {
   display: none;
-}
-
-/* ============================================
-   Dark mode
-   ============================================ */
-
-html.dark .search-modal__backdrop.MuiBackdrop-root {
-  background-color: var(--sm-surface-modal);
-}
-
-html.dark .search-modal__dialog.MuiDialog-paper,
-html.dark .search-modal__content.MuiDialogContent-root,
-html.dark .search-modal__footer.MuiDialogActions-root {
-  background: var(--sm-surface-page);
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__input-wrapper.MuiInputBase-root,
-html.dark .search-modal__input-wrapper.MuiOutlinedInput-root {
-  background: var(--sm-surface-weak);
-}
-
-html.dark .search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
-  border-color: var(--sm-stroke-weak);
-}
-
-html.dark .search-modal__input {
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__input::placeholder {
-  color: var(--sm-text-secondary);
-  opacity: 1;
-}
-
-html.dark .search-modal__dialog .MuiIconButton-root {
-  color: var(--sm-icon-primary);
-}
-
-html.dark .search-modal__esc-button.MuiButton-root {
-  border-color: var(--sm-stroke-weak);
-  background: var(--sm-surface-weak);
-  color: var(--sm-text-secondary);
-}
-
-html.dark .search-modal__esc-button.MuiButton-root:hover {
-  border-color: var(--sm-stroke-mid);
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__tab.Mui-selected {
-  background: var(--sm-surface-strong);
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__tab:not(.Mui-selected) {
-  color: var(--sm-text-tertiary);
-  border-color: var(--sm-stroke-mid);
-}
-
-html.dark .search-modal__content .MuiListItemText-primary {
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__hit {
-  background: var(--sm-surface-weak);
-  color: var(--sm-text-primary);
-}
-
-html.dark .search-modal__hit .search-modal__breadcrumbs,
-html.dark .search-modal__hit .search-modal__breadcrumbs .MuiBreadcrumbs-separator,
-html.dark .search-modal__hit .search-modal__snippet {
-  color: inherit;
-}
-
-html.dark .search-modal__content .MuiListItemText-secondary {
-  color: var(--sm-text-secondary);
-}
-
-html.dark .search-modal__footer .ais-PoweredBy-link,
-html.dark .search-modal__footer .ais-PoweredBy--dark .ais-PoweredBy-link {
-  color: var(--sm-text-secondary);
-}
-
-html.dark .search-modal__footer .ais-PoweredBy-link {
-  color: var(--sm-text-secondary);
-}
-
-html.dark .search-modal__report-link {
-  color: var(--sm-text-secondary);
-}
-
-html.dark .search-modal__hit mark {
-  color: var(--sm-text-primary);
 }
