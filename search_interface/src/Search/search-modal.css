@@ -57,6 +57,18 @@
   --sm-border-radius-xl: var(--border-radius-xl, 12px);
 }
 
+/* Ensure MUI typography/buttons also use the same font */
+.search-modal__dialog.MuiDialog-paper .MuiTypography-root,
+.search-modal__dialog.MuiDialog-paper .MuiButton-root,
+.search-modal__dialog.MuiDialog-paper .MuiTab-root {
+  font-family: var(--sm-font-sans) !important;
+}
+
+/* Disable MUI ripple effect on all buttons/tabs */
+.search-modal__dialog .MuiTouchRipple-root {
+  display: none;
+}
+
 /* -----------------------------------------------------------------------------
    Section 1: Backdrop & dialog chrome
    -------------------------------------------------------------------------- */
@@ -73,7 +85,7 @@
 
 .search-modal__dialog.MuiDialog-paper {
   max-height: 686px;
-  height: 686px;
+  height: fit-content;
   margin: 0 auto;
   width: 668px;
   max-width: calc(100vw - 32px); /* 16px container padding on both sides */
@@ -84,37 +96,6 @@
   color: var(--sm-text-primary);
   overflow: hidden;
   font-family: var(--sm-font-sans) !important;
-}
-
-/* If there are no hit cards (no results), shrink the dialog height. */
-@supports selector(:has(*)) {
-  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(
-      :has(.search-modal__hit)
-    ) {
-    height: auto !important;
-    min-height: 0;
-  }
-
-  .search-modal__dialog.MuiDialog-paper:has(.search-modal__content .search-modal__show-more[disabled]):not(
-      :has(.search-modal__hit)
-    )
-    .search-modal__content.MuiDialogContent-root {
-    flex: 0 0 auto;
-    max-height: none;
-    overflow: visible;
-  }
-}
-
-/* Ensure MUI typography/buttons also use the same font */
-.search-modal__dialog.MuiDialog-paper .MuiTypography-root,
-.search-modal__dialog.MuiDialog-paper .MuiButton-root,
-.search-modal__dialog.MuiDialog-paper .MuiTab-root {
-  font-family: var(--sm-font-sans) !important;
-}
-
-/* Disable MUI ripple effect on all buttons/tabs */
-.search-modal__dialog .MuiTouchRipple-root {
-  display: none;
 }
 
 /* -----------------------------------------------------------------------------
@@ -609,6 +590,43 @@
 }
 
 /* -----------------------------------------------------------------------------
+   Section 3e: No results empty state
+   -------------------------------------------------------------------------- */
+
+.search-modal__no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  height: 192px;
+  gap: 12px;
+}
+
+.search-modal__no-results-title {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: 24px;
+  font-weight: var(--sm-font-weight-medium);
+  line-height: 1;
+  letter-spacing: -0.24px;
+  text-align: center;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__no-results-subtitle {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: 16px;
+  font-weight: var(--sm-font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: -0.16px;
+  text-align: center;
+  color: var(--sm-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
    Section 3a (continue): Show More as a list entry
    -------------------------------------------------------------------------- */
 
@@ -644,13 +662,11 @@
   justify-content: space-between;
   width: 100%;
   height: auto;
-  /* min-height: 44px; */
 }
 
 .search-modal__footer-cell {
   display: flex;
   align-items: center;
-  /* min-height: 44px; ensures both footer "cells" render with identical height */
 }
 
 .search-modal__footer-cell:last-child {

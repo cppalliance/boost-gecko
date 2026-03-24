@@ -64,7 +64,7 @@ CustomHit.propTypes = {
   showLibName: PropTypes.bool,
 };
 
-function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
+function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName, hasQuery }) {
   const { hits, isLastPage, showMore } = useInfiniteHits();
   const { addMiddlewares } = useInstantSearch();
   const [error, setError] = React.useState(null);
@@ -109,6 +109,15 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
     );
   }
 
+  if (hits.length === 0 && hasQuery) {
+    return (
+      <div className='search-modal__no-results'>
+        <h2 className='search-modal__no-results-title'>No Results Found</h2>
+        <p className='search-modal__no-results-subtitle'>Sorry, We couldn&apos;t find any matches for your search.</p>
+      </div>
+    );
+  }
+
   return (
     <Stack className='search-modal__hits-stack' spacing={2}>
       {memoizedHits}
@@ -126,6 +135,7 @@ InfiniteHits.propTypes = {
   setnbHits: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   showLibName: PropTypes.bool,
+  hasQuery: PropTypes.bool.isRequired,
 };
 
 export default InfiniteHits;
