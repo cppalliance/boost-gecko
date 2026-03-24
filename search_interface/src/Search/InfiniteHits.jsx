@@ -47,12 +47,7 @@ function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
         )}
         {hierarchyLinks}
       </Breadcrumbs>
-      <Snippet
-        classNames={{ root: 'search-modal__snippet' }}
-        style={{ color: theme.palette.text.secondary }}
-        hit={hit}
-        attribute='content'
-      />
+      <Snippet classNames={{ root: 'search-modal__snippet' }} hit={hit} attribute='content' />
     </Box>
   );
 }
