@@ -104,6 +104,15 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName, hasQuery }) 
     );
   }
 
+  if (hits.length === 0 && !hasQuery) {
+    return (
+      <div className='search-modal__empty-state'>
+        <h2 className='search-modal__empty-state-title'>Ready when you are</h2>
+        <p className='search-modal__empty-state-subtitle'>Your search results will appear here once you start typing.</p>
+      </div>
+    );
+  }
+
   if (hits.length === 0 && hasQuery) {
     return (
       <div className='search-modal__no-results'>
