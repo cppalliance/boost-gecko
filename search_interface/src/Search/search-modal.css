@@ -180,7 +180,7 @@ html.dark .search-modal__root.MuiDialog-root {
 .search-modal__input-wrapper.Mui-focused {
   box-shadow: none;
   background-color: var(--sm-surface-mid);
-  outline: 2px solid var(--sm-stroke-link-accent);
+  outline: 2px solid var(--sm-stroke-strong);
   outline-offset: -2px;
 }
 

@@ -245,10 +245,8 @@ function SearchDialog({
         <ThemeProvider theme={theme}>
           <Dialog
             fullScreen={dialogShouldBeFullScreen}
-            disableScrollLock={true}
             keepMounted={keepDialogMounted}
             fullWidth
-            disableRestoreFocus
             maxWidth='md'
             open={dialogOpen}
             onClose={handleDialogClose}
