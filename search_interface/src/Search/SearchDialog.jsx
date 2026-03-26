@@ -125,14 +125,26 @@ function SearchDialog({
   const dialogShouldBeFullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const inputRef = React.useRef(null);
+  // Stores the element that opened the dialog so we can restore focus to it on close.
+  // Uses document.activeElement (a browser API) rather than element IDs or component
+  // references, so it remains reliable after minification or when exported elsewhere.
+  const triggerRef = React.useRef(null);
 
   const handleDialogOpen = React.useCallback(() => {
+    triggerRef.current = document.activeElement;
     window.location.hash = '#search-dialog';
     setKeepDialogMounted(true);
     setTimeout(() => {
       inputRef.current.focus();
     }, 0);
   }, [inputRef]);
+
+  React.useEffect(() => {
+    if (!dialogOpen && triggerRef.current) {
+      triggerRef.current.focus();
+      triggerRef.current = null;
+    }
+  }, [dialogOpen]);
 
   React.useEffect(() => {
     const searchButton = document.getElementById('gecko-search-button');

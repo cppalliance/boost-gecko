@@ -772,12 +772,11 @@ html.dark .search-modal__root.MuiDialog-root {
   font-family: var(--sm-font-sans);
   font-size: var(--sm-font-size-small);
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--sm-font-weight-regular);
   line-height: var(--sm-line-height-relaxed);
   letter-spacing: -0.14px;
   text-decoration: none;
   text-transform: none;
-  border-radius: var(--sm-border-radius-xl);
 }
 
 .search-modal__report-link:hover {
