@@ -61,6 +61,7 @@ function SearchBox({ inputRef, recentSearches, onQueryChange }) {
           {...params}
           placeholder='Search...'
           inputRef={inputRef}
+          aria-label='Search documentation'
           slotProps={{
             input: {
               ...params.InputProps,

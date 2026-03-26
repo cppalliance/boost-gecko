@@ -175,16 +175,13 @@ html.dark .search-modal__root.MuiDialog-root {
   border-color: var(--sm-stroke-mid);
 }
 
-/* Remove the "blue focus box" (typically MUI focus ring / box-shadow) */
+/* Focus state: visible outline + background shift */
 .search-modal__input-wrapper:focus-within,
 .search-modal__input-wrapper.Mui-focused {
   box-shadow: none;
   background-color: var(--sm-surface-mid);
-}
-
-.search-modal__input-wrapper:focus-visible {
-  outline: none;
-  box-shadow: none;
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
 }
 
 .search-modal__input:focus,
@@ -484,11 +481,25 @@ html.dark .search-modal__root.MuiDialog-root {
   background: var(--sm-surface-weak);
   word-wrap: break-word;
   box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
   /*
     Minimum height to keep the list looking consistent,
     but allow it to expand when the hit content wraps.
   */
   min-height: 55px;
+}
+
+.search-modal__hit:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+/* Stretched link covers the entire card so any click navigates to the deepest result. */
+.search-modal__hit-link {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .search-modal__hit mark {
@@ -545,6 +556,9 @@ html.dark .search-modal__root.MuiDialog-root {
   font-weight: var(--sm-font-weight-medium);
   line-height: var(--sm-line-height-relaxed);
   padding: 1px;
+  /* Sit above the stretched card link so individual breadcrumbs remain clickable. */
+  position: relative;
+  z-index: 1;
 }
 
 .search-modal__breadcrumbs a:hover {
@@ -554,6 +568,11 @@ html.dark .search-modal__root.MuiDialog-root {
 .search-modal__breadcrumbs a:focus-visible {
   outline: 2px solid var(--sm-stroke-link-accent);
   outline-offset: -2px;
+}
+
+.search-modal__snippet-wrapper {
+  margin: 0;
+  padding: 0;
 }
 
 .search-modal__snippet {
