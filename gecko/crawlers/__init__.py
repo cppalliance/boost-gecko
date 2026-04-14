@@ -1,6 +1,5 @@
 from .antora import Antora
 from .asciidoc import AsciiDoc
-from .boost_exception import BoostException
 from .boost_format import BoostFormat
 from .boost_functional import BoostFunctional
 from .boost_gil import BoostGIL

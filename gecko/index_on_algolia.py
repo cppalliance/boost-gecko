@@ -20,6 +20,10 @@ if __name__ == "__main__":
         with open(path, 'r', encoding='utf-8') as f:
             records = json.load(f)
 
+            if not records:
+                print('skipping {} (empty records)'.format(path.stem))
+                continue
+
             # Delete the existing records for this library.
             client.delete_by(libraries_index, {'filters': 'library_key:{}'.format(records[0]['library_key'])})
 

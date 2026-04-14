@@ -14,6 +14,8 @@ from .config import config, update_config_file
 
 
 def check_for_abnormality(nbof: str, name: str, prev: int, curr: int):
+    if prev == 0:
+        return curr != 0
     if (abs(curr - prev) / prev) > 0.2:
         print('Error: Abnormal change in number of {} in {} from:{} to:{}'.format(nbof, name, prev,  curr))
         return True
