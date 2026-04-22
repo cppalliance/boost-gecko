@@ -1,7 +1,7 @@
 boost:
   version: '1_91_0'
   root: '../boost_1_91_0'
-  link: 'https://archives.boost.io/beta/1.91.0.beta1/source/boost_1_91_0_b1.tar.gz'
+  link: 'https://archives.boost.io/release/1.91.0/source/boost_1_91_0.tar.gz'
 
 website-v2-docs:
   root: '../website-v2-docs/build'
@@ -118,9 +118,9 @@ crawlers:
   - name: BoostJson
     libraries:
       - key: json
-        last-records: 525
-        last-words: 59642
-        last-lvls: 1391
+        last-records: 526
+        last-words: 59710
+        last-lvls: 1393
 
   - name: BoostPreprocessor
     libraries:
@@ -309,25 +309,30 @@ crawlers:
 
   - name: Antora
     libraries:
+      - key: decimal
+        last-records: 257
+        last-words: 31151
+        last-lvls: 688
+
       - key: dynamic_bitset
         last-records: 1224
-        last-words: 21583
+        last-words: 21577
         last-lvls: 2155
 
       - key: msm
         last-records: 380
-        last-words: 39820
+        last-words: 39836
         last-lvls: 1825
 
       - key: openmethod
         last-records: 1339
-        last-words: 24756
+        last-words: 24767
         last-lvls: 2374
 
       - key: redis
-        last-records: 999
-        last-words: 28493
-        last-lvls: 1721
+        last-records: 1000
+        last-words: 28836
+        last-lvls: 1723
 
       - key: unordered
         last-records: 1345
@@ -335,9 +340,9 @@ crawlers:
         last-lvls: 7425
 
       - key: url
-        last-records: 6820
-        last-words: 115699
-        last-lvls: 12637
+        last-records: 6827
+        last-words: 116424
+        last-lvls: 12651
 
   - name: AsciiDoc
     libraries:
@@ -484,9 +489,9 @@ crawlers:
         last-lvls: 152
 
       - key: beast
-        last-records: 4872
-        last-words: 161416
-        last-lvls: 18414
+        last-records: 4873
+        last-words: 161457
+        last-lvls: 18416
 
       - key: bimap
         last-records: 170
@@ -629,9 +634,9 @@ crawlers:
         last-lvls: 10746
 
       - key: heap
-        last-records: 91
-        last-words: 8255
-        last-lvls: 286
+        last-records: 93
+        last-words: 8335
+        last-lvls: 296
 
       - key: histogram
         last-records: 453
@@ -680,7 +685,7 @@ crawlers:
 
       - key: lockfree
         last-records: 45
-        last-words: 6803
+        last-words: 6874
         last-lvls: 113
 
       - key: log
@@ -744,9 +749,9 @@ crawlers:
         last-lvls: 197
 
       - key: parser
-        last-records: 593
-        last-words: 62831
-        last-lvls: 577
+        last-records: 598
+        last-words: 63487
+        last-lvls: 581
 
       - key: pfr
         last-records: 131
