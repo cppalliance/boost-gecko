@@ -3,7 +3,6 @@ from .asciidoc import AsciiDoc
 from .boost_format import BoostFormat
 from .boost_functional import BoostFunctional
 from .boost_gil import BoostGIL
-from .boost_graph import BoostGraph
 from .boost_iostreams import BoostIostreams
 from .boost_json import BoostJson
 from .boost_mpl import BoostMPL
