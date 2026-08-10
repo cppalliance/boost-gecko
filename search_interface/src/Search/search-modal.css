@@ -1,0 +1,807 @@
+/* =============================================================================
+   SEARCH MODAL – BEM styles for boost-gecko search dialog
+   =============================================================================
+   Block: .search-modal
+
+   Structure (search for "Section N" to jump):
+   0   Design tokens
+   1   Backdrop & dialog chrome
+   2   Title block        | 2a Search input | 2b Esc | 2c Tabs | 2d Tip
+   3   Content            | 3a Show More    | 3b List/links | 3c Hit cards | 3e No results
+   4   Footer             | 4a Powered by  | 4b Report Issue
+
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   Section 0: Design tokens (these are all prefixed with --sm- to avoid conflicts with global tokens, and to make it clear these are for the search modal specifically)
+   These are also scoped to the root of the search modal, so they don't affect any other components that might be nested inside (e.g. MUI components)
+   -------------------------------------------------------------------------- */
+
+.search-modal__root.MuiDialog-root {
+  z-index: 99999;
+  /* ── Typography ── */
+  --sm-font-sans: var(--font-sans, 'Mona Sans VF', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  --sm-font-size-small: var(--font-size-small, 14px);
+  --sm-font-size-base: var(--font-size-base, 16px);
+  --sm-font-size-medium: var(--font-size-medium, 18px);
+  --sm-font-size-large: var(--font-size-large, 24px);
+  --sm-line-height-default: var(--line-height-default, 1.2);
+  --sm-line-height-relaxed: var(--line-height-relaxed, 1.24);
+  --sm-font-weight-regular: var(--font-weight-regular, 400);
+  --sm-font-weight-medium: var(--font-weight-medium, 500);
+  --sm-font-weight-bold: var(--font-weight-bold, 700);
+  /* ── Text colours ── */
+  --sm-text-primary: var(--color-text-primary, #050816);
+  --sm-text-secondary: var(--color-text-secondary, #585a64);
+  --sm-text-tertiary: var(--color-text-tertiary, #71737b);
+  --sm-text-link-accent: var(--color-text-link-accent, #0077b8);
+  /* ── Surfaces ── */
+  --sm-surface-page: var(--color-surface-page, #f7fdfe);
+  --sm-surface-weak: var(--color-surface-weak, #ffffff);
+  --sm-surface-mid: var(--color-surface-mid, #f7f7f8);
+  --sm-surface-strong: var(--color-surface-strong, #efeff1);
+  --sm-surface-modal: var(--color-surface-modal, #050816b3);
+  /* ── Strokes ── */
+  --sm-stroke-weak: var(--color-stroke-weak, #0508161a);
+  --sm-stroke-mid: var(--color-stroke-mid, #0508162b);
+  --sm-stroke-strong: var(--color-stroke-strong, #05081640);
+  --sm-stroke-link-accent: var(--color-stroke-link-accent, #0077b8);
+  /* ── Icons ── */
+  --sm-icon-primary: var(--color-icon-primary, #050816);
+  /* ── Spacing ── */
+  --sm-space-s: var(--space-s, 4px);
+  --sm-space-default: var(--space-default, 8px);
+  --sm-space-medium: var(--space-medium, 12px);
+  --sm-space-large: var(--space-large, 16px);
+  --sm-space-xl: var(--space-xl, 32px);
+  /* ── Radii ── */
+  --sm-border-radius-xs: var(--border-radius-xs, 2px);
+  --sm-border-radius-s: var(--border-radius-s, 4px);
+  --sm-border-radius-l: var(--border-radius-l, 8px);
+  --sm-border-radius-xl: var(--border-radius-xl, 12px);
+}
+
+/* Dark mode overrides (these will apply when the "dark" class is added to the root html element */
+html.dark .search-modal__root.MuiDialog-root {
+  /* ── Text colours ── */
+  --sm-text-primary: var(--color-text-primary, #ffffff);
+  --sm-text-secondary: var(--color-text-secondary, #cacbce);
+  --sm-text-tertiary: var(--color-text-tertiary, #82848a);
+  --sm-text-link-accent: var(--color-text-link-accent, #6dcdf7);
+  /* ── Surfaces ── */
+  --sm-surface-page: var(--color-surface-page, #050816);
+  --sm-surface-weak: var(--color-surface-weak, #1a1c29);
+  --sm-surface-mid: var(--color-surface-mid, #2f313d);
+  --sm-surface-strong: var(--color-surface-strong, #585a64);
+  --sm-surface-modal: var(--color-surface-modal, #0508164d);
+  /* ── Strokes ── */
+  --sm-stroke-weak: var(--color-stroke-weak, #f7f7f81a);
+  --sm-stroke-mid: var(--color-stroke-mid, #f7f7f82b);
+  --sm-stroke-strong: var(--color-stroke-strong, #f7f7f836);
+  --sm-stroke-link-accent: var(--color-stroke-link-accent, #6dcdf7);
+  /* ── Icons ── */
+  --sm-icon-primary: var(--color-icon-primary, #ffffff);
+}
+
+/* Ensure MUI typography/buttons also use the same font */
+.search-modal__dialog .MuiTypography-root,
+.search-modal__dialog .MuiButton-root,
+.search-modal__dialog .MuiTab-root {
+  font-family: var(--sm-font-sans);
+}
+
+/* Disable MUI ripple effect on all buttons/tabs */
+.search-modal__dialog .MuiTouchRipple-root {
+  display: none;
+}
+
+.search-modal__dialog p {
+  margin: 0;
+  padding: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 1: Backdrop & dialog chrome
+   -------------------------------------------------------------------------- */
+
+.search-modal__backdrop.MuiBackdrop-root {
+  background-color: var(--sm-surface-modal);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.search-modal__dialog.MuiDialog-paper {
+  max-height: min(700px, calc(100vh - var(--sm-space-xl)));
+  height: 100%;
+  margin: 0 auto;
+  width: 668px;
+  max-width: calc(100vw - var(--sm-space-xl));
+  border-radius: var(--sm-border-radius-xl);
+  display: flex;
+  flex-direction: column;
+  background: var(--sm-surface-page);
+  color: var(--sm-text-primary);
+  overflow: hidden;
+  font-family: var(--sm-font-sans);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2: Title block (search input row + tip + tabs)
+   -------------------------------------------------------------------------- */
+
+.search-modal__title.MuiDialogTitle-root {
+  padding: var(--sm-space-large);
+  padding-bottom: 0;
+  flex: 0 0 auto;
+  background: var(--sm-surface-page);
+}
+
+.search-modal__title-grid {
+  align-items: flex-start;
+  gap: var(--sm-space-default) var(--sm-space-s);
+}
+
+.search-modal__title-grid > .MuiGrid-root {
+  min-width: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2a: Search input
+   -------------------------------------------------------------------------- */
+
+.search-modal__input-wrapper,
+.search-modal__input-wrapper.MuiOutlinedInput-root {
+  height: 40px;
+  border-radius: var(--sm-border-radius-xl);
+  background: var(--sm-surface-weak);
+  padding: 0px var(--sm-space-large) !important;
+  gap: var(--sm-space-default);
+}
+
+.search-modal__input-wrapper .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-weak);
+}
+
+.search-modal__input-wrapper:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-mid);
+}
+
+.search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--sm-stroke-strong);
+  border-width: 1px !important;
+}
+
+.search-modal__input-wrapper.Mui-focused .MuiOutlinedInput-notchedOutline:hover {
+  border-color: var(--sm-stroke-mid);
+}
+
+/* Focus state: visible outline + background shift */
+.search-modal__input-wrapper:focus-within,
+.search-modal__input-wrapper.Mui-focused {
+  box-shadow: none;
+  background-color: var(--sm-surface-mid);
+  outline: 2px solid var(--sm-stroke-strong);
+  outline-offset: -2px;
+}
+
+.search-modal__input:focus,
+.search-modal__input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.search-modal__input {
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+  padding: 0px !important;
+  background-color: transparent;
+}
+
+.search-modal__input::placeholder {
+  color: var(--sm-text-secondary);
+  opacity: 1;
+}
+
+/* Icon buttons (submit arrow, close, etc.) */
+.search-modal__dialog .MuiIconButton-root {
+  color: var(--sm-icon-primary);
+}
+
+.search-modal__dialog .MuiIconButton-root:hover {
+  color: var(--sm-text-link-accent);
+}
+
+.search-modal__dialog .MuiIconButton-root:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: 2px;
+  border-radius: var(--sm-border-radius-xs);
+}
+
+.search-modal__input-adornment {
+  margin-right: 0px;
+  color: var(--sm-icon-primary);
+  width: 16px;
+  height: 16px;
+}
+
+.search-modal__end-adornment {
+  margin-left: var(--sm-space-default);
+  margin-right: 0;
+  color: var(--sm-icon-primary);
+}
+
+.search-modal__autocomplete-icon {
+  margin-right: var(--sm-space-default);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2b: Esc button
+   -------------------------------------------------------------------------- */
+
+.search-modal__esc-button.MuiButton-root {
+  height: 40px;
+  min-width: 54px;
+  padding: 0 var(--sm-space-large);
+  border: 1px solid var(--sm-stroke-weak);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-secondary);
+  border-radius: var(--sm-border-radius-xl);
+  text-transform: none;
+  flex-direction: column;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+}
+
+.search-modal__esc-button:hover {
+  border-color: var(--sm-stroke-mid);
+  background: var(--sm-surface-weak);
+  color: var(--sm-text-primary);
+}
+
+.search-modal__esc-button .MuiSvgIcon-root {
+  display: none;
+}
+
+.search-modal__esc-button:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2c: Tabs (Libraries / Learn)
+   -------------------------------------------------------------------------- */
+
+.search-modal__tab:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+.search-modal__tabs.MuiTabs-root {
+  min-height: unset;
+}
+
+.search-modal__tabs .MuiTabs-flexContainer {
+  gap: var(--sm-space-s);
+}
+
+.search-modal__tabs .MuiTabs-indicator {
+  display: none;
+}
+
+.search-modal__tab.MuiTab-root {
+  min-height: unset;
+  padding: var(--sm-space-default);
+  border: 1px solid transparent;
+  border-radius: var(--sm-border-radius-l);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  text-transform: none;
+  display: inline;
+}
+
+.search-modal__tab.Mui-selected:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+}
+
+.search-modal__tab.Mui-selected {
+  background: var(--sm-surface-strong);
+  color: var(--sm-text-primary);
+}
+
+.search-modal__tab:not(.Mui-selected) {
+  color: var(--sm-text-tertiary);
+  border: 1px solid var(--sm-stroke-mid);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 2d: Tip row
+   -------------------------------------------------------------------------- */
+
+.search-modal__tip {
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+  padding-top: var(--sm-space-default);
+  padding-bottom: var(--sm-space-default);
+  display: none;
+}
+
+.search-modal__tip-label {
+  font-weight: var(--sm-font-weight-medium);
+  color: var(--sm-text-primary);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3: Content area (scrollable hit list)
+   -------------------------------------------------------------------------- */
+
+.search-modal__content.MuiDialogContent-root {
+  padding: 0 var(--sm-space-large);
+  background: var(--sm-surface-page);
+  min-height: 0; /* allows this flex child to shrink and scroll correctly */
+  overflow: auto;
+  max-height: none;
+  margin-top: var(--sm-space-default);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tab panel wrapper */
+.search-modal__tab-panel {
+  gap: var(--sm-space-medium);
+  padding-top: 0px;
+  flex: 1;
+}
+
+/* When the tab panel contains an empty or no-results state, use flex to center */
+.search-modal__tab-panel:has(.search-modal__empty-state),
+.search-modal__tab-panel:has(.search-modal__no-results) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide inactive tab panel */
+.search-modal__tab-panel[hidden] {
+  display: none;
+}
+
+/* Result links: pointer cursor, no underline */
+.search-modal__content a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.search-modal__content a:hover {
+  text-decoration: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3a: Show More button
+   -------------------------------------------------------------------------- */
+
+/* Hide disabled show-more button */
+.search-modal__content .search-modal__show-more[disabled] {
+  display: none;
+}
+
+/* Hide empty-state wrapper (the one wrapping a disabled show-more) */
+.search-modal__content .search-modal__show-more-wrapper:has(> .search-modal__show-more[disabled]) {
+  display: none;
+}
+
+/* Tab panel with disabled show-more: keep flex layout, no card look */
+.search-modal__tab-panel:has(.search-modal__show-more[disabled]):not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+/* General button styling */
+.search-modal__show-more {
+  border-radius: var(--sm-border-radius-l);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  border: 1px solid var(--sm-stroke-strong);
+  padding: var(--sm-space-default);
+  color: var(--sm-text-primary);
+  text-transform: none;
+  width: 100%;
+}
+
+.search-modal__show-more:hover {
+  border-color: var(--sm-stroke-link-accent);
+  background-color: transparent;
+  color: var(--sm-text-link-accent);
+}
+
+.search-modal__show-more:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3b: Result list (MuiList / MuiListItem) and content links
+   -------------------------------------------------------------------------- */
+
+.search-modal__content .MuiList-root {
+  padding: 0;
+  margin: 0;
+}
+
+.search-modal__content .MuiListItem-root {
+  padding: 0;
+}
+
+.search-modal__content .MuiListItemText-primary {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__content .MuiListItemText-secondary {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3c: Hit cards (breadcrumbs + ais-Snippet)
+   -------------------------------------------------------------------------- */
+
+.search-modal__hit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--sm-space-s);
+  padding: var(--sm-space-default);
+  align-self: stretch;
+  border-radius: var(--sm-border-radius-s);
+  background: var(--sm-surface-weak);
+  word-wrap: break-word;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  /*
+    Minimum height to keep the list looking consistent,
+    but allow it to expand when the hit content wraps.
+  */
+  min-height: 55px;
+}
+
+.search-modal__hit:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+/* Stretched link covers the entire card so any click navigates to the deepest result. */
+.search-modal__hit-link {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.search-modal__hit mark {
+  font-weight: var(--sm-font-weight-bold);
+  background: transparent;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__breadcrumbs {
+  display: block;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-primary);
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-ol {
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-modal__breadcrumbs .MuiBreadcrumbs-separator {
+  margin: 0 var(--sm-space-default);
+  color: var(--sm-text-primary);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
+}
+
+.search-modal__breadcrumbs a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-medium);
+  line-height: var(--sm-line-height-relaxed);
+  padding: 1px;
+  /* Sit above the stretched card link so individual breadcrumbs remain clickable. */
+  position: relative;
+  z-index: 1;
+}
+
+.search-modal__breadcrumbs a:hover {
+  text-decoration: none;
+}
+
+.search-modal__breadcrumbs a:focus-visible {
+  outline: 2px solid var(--sm-stroke-link-accent);
+  outline-offset: -2px;
+}
+
+.search-modal__snippet-wrapper {
+  margin: 0;
+  padding: 0;
+}
+
+.search-modal__snippet {
+  display: block;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+}
+
+.search-modal__snippet .ais-Snippet-highlighted {
+  font-weight: var(--sm-font-weight-bold);
+  color: var(--sm-text-primary);
+}
+
+/* Hit card inner layout (Stack items) */
+.search-modal__hits-stack {
+  /* MUI Stack spacing adds an extra gap on top of our margin rules. */
+  gap: 0;
+  align-self: stretch;
+}
+
+.search-modal__hits-stack > .search-modal__hit {
+  /* Override MUI Stack spacing, keep total height aligned to .search-modal__hit. */
+  min-height: 55px;
+  padding: var(--sm-space-default);
+  margin-top: 0;
+  margin-bottom: var(--sm-space-default);
+  overflow-wrap: anywhere;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3e: No results empty state
+   -------------------------------------------------------------------------- */
+
+.search-modal__no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  gap: var(--sm-space-medium);
+}
+
+.search-modal__no-results-title {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-large);
+  font-weight: var(--sm-font-weight-medium);
+  letter-spacing: -0.24px;
+  text-align: center;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__no-results-subtitle {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-base);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-default);
+  letter-spacing: -0.16px;
+  text-align: center;
+  color: var(--sm-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3f: Empty state (no query yet)
+   -------------------------------------------------------------------------- */
+
+.search-modal__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  gap: var(--sm-space-medium);
+}
+
+.search-modal__empty-state-title {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-large);
+  font-weight: var(--sm-font-weight-medium);
+  letter-spacing: -0.24px;
+  text-align: center;
+  color: var(--sm-text-primary);
+}
+
+.search-modal__empty-state-subtitle {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-base);
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-default);
+  letter-spacing: -0.16px;
+  text-align: center;
+  color: var(--sm-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 3a (continue): Show More as a list entry
+   -------------------------------------------------------------------------- */
+
+.search-modal__show-more-wrapper {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--sm-border-radius-s);
+  margin-bottom: var(--sm-space-default);
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4: Footer (actions)
+   -------------------------------------------------------------------------- */
+
+.search-modal__footer.MuiDialogActions-root {
+  padding: 6px var(--sm-space-large) 20px var(--sm-space-large);
+  background: var(--sm-surface-page);
+  flex: 0 0 auto;
+}
+
+.search-modal__footer-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+}
+
+.search-modal__footer-cell {
+  display: flex;
+  align-items: center;
+}
+
+.search-modal__footer-cell:last-child {
+  justify-content: flex-end;
+}
+
+.search-modal__footer-cell--label {
+  gap: var(--sm-space-default);
+}
+
+.search-modal__footer-label {
+  margin: 0;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  color: var(--sm-text-secondary);
+  text-decoration: none;
+  text-transform: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4a: Algolia "Powered by" in footer
+   -------------------------------------------------------------------------- */
+
+.search-modal__footer .ais-PoweredBy {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.search-modal__footer .ais-PoweredBy-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sm-space-default);
+  color: var(--sm-text-secondary);
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-style: normal;
+  font-weight: 400;
+  height: 100%;
+  width: auto;
+  line-height: 124%;
+  letter-spacing: -0.14px;
+  text-decoration: none;
+}
+
+.search-modal__footer .ais-PoweredBy-text {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 124%;
+  letter-spacing: -0.14px;
+}
+
+.search-modal__footer .ais-PoweredBy-logo {
+  display: block;
+  width: 62px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+/* -----------------------------------------------------------------------------
+   Section 4b: Report Issue link (footer)
+   -------------------------------------------------------------------------- */
+
+.search-modal__report-link {
+  justify-content: flex-end;
+  padding: 0;
+  min-width: 0;
+  color: var(--sm-text-secondary);
+  display: flex;
+  align-items: center;
+  font-family: var(--sm-font-sans);
+  font-size: var(--sm-font-size-small);
+  font-style: normal;
+  font-weight: var(--sm-font-weight-regular);
+  line-height: var(--sm-line-height-relaxed);
+  letter-spacing: -0.14px;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.search-modal__report-link:hover {
+  text-decoration: underline;
+}
+
+.search-modal__report-link .MuiButton-icon {
+  display: none;
+}

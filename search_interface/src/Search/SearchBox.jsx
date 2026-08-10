@@ -2,10 +2,8 @@ import React from 'react';
 
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import Autocomplete from '@mui/material/Autocomplete';
-import HistoryIcon from '@mui/icons-material/History';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTheme } from '@mui/material/styles';
 
@@ -13,7 +11,7 @@ import { useSearchBox, useInstantSearch } from 'react-instantsearch';
 
 let queryHookTimerId;
 
-function SearchBox({ inputRef, recentSearches }) {
+function SearchBox({ inputRef, recentSearches, onQueryChange }) {
   const theme = useTheme();
   const queryHook = React.useCallback((query, search) => {
     clearTimeout(queryHookTimerId);
@@ -30,38 +28,77 @@ function SearchBox({ inputRef, recentSearches }) {
       size='small'
       options={recentSearches.map((option) => option.query)}
       value={currentRefinement}
-      onInputChange={(e, newValue) => refine(newValue)}
-      onChange={(e, newValue) => refine(newValue || '')}
+      onInputChange={(e, newValue) => {
+        const trimmed = (newValue || '').trim();
+        onQueryChange?.(trimmed.length > 0);
+        refine(newValue);
+      }}
+      onChange={(e, newValue) => {
+        const nextValue = newValue || '';
+        const trimmed = nextValue.trim();
+        onQueryChange?.(trimmed.length > 0);
+        refine(nextValue);
+      }}
       renderOption={(props, option) => (
         <Box {...props}>
-          <HistoryIcon sx={{ mr: 1.5, color: theme.palette.text.secondary }} />
+          {/* Clock Icon */}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='24'
+            height='24'
+            viewBox='0 0 24 24'
+            fill='none'
+            aria-hidden='true'
+            className='search-modal__autocomplete-icon'
+          >
+            <path d='M19 3H5V5H3V19H5V21H19V19H21V5H19V3ZM19 5V19H5V5H19ZM11 7H13V13H17V15H11V7Z' fill='#050816' />
+          </svg>
           {option}
         </Box>
       )}
       renderInput={(params) => (
         <TextField
           {...params}
-          sx={{
-            '& input:focus': {
-              boxShadow: 'none',
-            },
-          }}
           placeholder='Search...'
           inputRef={inputRef}
-          InputProps={{
-            ...params.InputProps,
-            style: { fontSize: '1.2rem' },
-            endAdornment: (
-              <React.Fragment>
-                {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon />
-              </InputAdornment>
-            ),
+          aria-label='Search documentation'
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              className: `${params.InputProps.className || ''} search-modal__input-wrapper`.trim(),
+              endAdornment: (
+                <React.Fragment>
+                  {status === 'loading' || status === 'stalled' ? <CircularProgress size={16} /> : null}
+                  <InputAdornment className='search-modal__input-adornment search-modal__end-adornment' position='end'>
+                    <svg
+                      width='16'
+                      height='16'
+                      viewBox='0 0 16 16'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                      aria-hidden='true'
+                    >
+                      <path
+                        d='M2.66699 7.33337V8.66671H10.667V10H12.0003V8.66671H13.3337V7.33337H12.0003V6.00004H10.667V7.33337H2.66699ZM9.33366 4.66671H10.667V6.00004H9.33366V4.66671ZM9.33366 4.66671H8.00033V3.33337H9.33366V4.66671ZM9.33366 11.3334H10.667V10H9.33366V11.3334ZM9.33366 11.3334H8.00033V12.6667H9.33366V11.3334Z'
+                        fill='currentColor'
+                      />
+                    </svg>
+                  </InputAdornment>
+                  {params.InputProps.endAdornment}
+                </React.Fragment>
+              ),
+              startAdornment: (
+                <InputAdornment className='search-modal__input-adornment' position='start'>
+                  <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'>
+                    <path d='M6 2h8v2H6V2zM4 6V4h2v2H4zm0 8H2V6h2v8zm2 2H4v-2h2v2zm8 0v2H6v-2h8zm2-2h-2v2h2v2h2v2h2v2h2v-2h-2v-2h-2v-2h-2v-2zm0-8h2v8h-2V6zm0 0V4h-2v2h2z' />
+                  </svg>
+                </InputAdornment>
+              ),
+            },
+            htmlInput: {
+              ...params.inputProps,
+              className: `${params.inputProps.className || ''} search-modal__input`.trim(),
+            },
           }}
         />
       )}

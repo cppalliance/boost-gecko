@@ -14,12 +14,20 @@ import { useTheme } from '@mui/material/styles';
 
 import { useInfiniteHits, useInstantSearch, useStats, Snippet } from 'react-instantsearch';
 
-function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
+function CustomHit({ hit, index, activeResultIndex, urlPrefix, onClick, showLibName }) {
   const theme = useTheme();
   const { library_key, library_name, hierarchy, _highlightResult } = hit;
+
+  const hierarchyKeys = _highlightResult ? Object.keys(_highlightResult.hierarchy) : [];
+
+  const primaryHref = React.useMemo(() => {
+    const lastKey = hierarchyKeys[hierarchyKeys.length - 1];
+    return lastKey ? urlJoin(urlPrefix, hierarchy[lastKey].path) : urlJoin(urlPrefix, 'libs', library_key);
+  }, [urlPrefix, hierarchy, hierarchyKeys, library_key]);
+
   const hierarchyLinks = React.useMemo(() => {
     if (!_highlightResult) return [];
-    return Object.keys(_highlightResult.hierarchy).map((key) => (
+    return hierarchyKeys.map((key, i) => (
       <Link
         underline='hover'
         dangerouslySetInnerHTML={{
@@ -29,30 +37,61 @@ function CustomHit({ hit, urlPrefix, onClick, showLibName }) {
         onClick={onClick}
         onAuxClick={onClick}
         href={urlJoin(urlPrefix, hierarchy[key].path)}
+        {...(i === hierarchyKeys.length - 1 && { 'aria-current': 'page' })}
       ></Link>
     ));
-  }, [urlPrefix, onClick, hierarchy, _highlightResult]);
+  }, [urlPrefix, onClick, hierarchy, _highlightResult, hierarchyKeys]);
+
+  const hitLabel = React.useMemo(() => {
+    const parts = [];
+    if (showLibName || hierarchyKeys.length === 0) parts.push(library_name);
+    if (_highlightResult) {
+      for (const key of hierarchyKeys) {
+        // Strip HTML highlight tags to get plain text for the aria-label.
+        const plain = _highlightResult.hierarchy[key].title.value.replace(/<[^>]+>/g, '');
+        if (plain) parts.push(plain);
+      }
+    }
+    return parts.join(' > ');
+  }, [showLibName, library_name, hierarchyKeys, _highlightResult]);
 
   return (
     <Box
-      sx={{
-        wordWrap: 'break-word',
-        '& mark': {
-          color: 'inherit',
-          bgcolor: 'inherit',
-          fontWeight: 'bolder',
-        },
-      }}
+      className='search-modal__hit'
+      role='option'
+      id={`search-result-${index}`}
+      aria-selected={index === activeResultIndex}
+      aria-label={hitLabel}
+      tabIndex={-1}
     >
-      <Breadcrumbs separator='&rsaquo;' sx={{ wordBreak: 'break-all' }}>
+      {/* Stretched link makes the entire card clickable, pointing to the deepest hierarchy entry.
+         Breadcrumb links sit above it (via z-index) so they remain individually clickable. */}
+      <a
+        className='search-modal__hit-link'
+        href={primaryHref}
+        onClick={onClick}
+        onAuxClick={onClick}
+        tabIndex={-1}
+        aria-hidden='true'
+      />
+      <Breadcrumbs className='search-modal__breadcrumbs' separator='&gt;' aria-label='Breadcrumb'>
         {(showLibName || hierarchyLinks.length === 0) && (
-          <Link underline='hover' href={urlJoin(urlPrefix, 'libs', library_key)}>
+          <Link
+            underline='hover'
+            href={urlJoin(urlPrefix, 'libs', library_key)}
+            className='search-modal__breakcrumbs-link'
+          >
             {library_name}
           </Link>
         )}
         {hierarchyLinks}
       </Breadcrumbs>
-      <Snippet style={{ color: theme.palette.text.secondary }} hit={hit} attribute='content' />
+      <p
+        className='search-modal__snippet-wrapper'
+        aria-label={hit._snippetResult?.content?.value?.replace(/<[^>]+>/g, '') || ''}
+      >
+        <Snippet classNames={{ root: 'search-modal__snippet' }} hit={hit} attribute='content' />
+      </p>
     </Box>
   );
 }
@@ -64,9 +103,9 @@ CustomHit.propTypes = {
   showLibName: PropTypes.bool,
 };
 
-function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
+function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName, hasQuery, activeResultIndex }) {
   const { hits, isLastPage, showMore } = useInfiniteHits();
-  const { addMiddlewares } = useInstantSearch();
+  const { addMiddlewares, status } = useInstantSearch();
   const [error, setError] = React.useState(null);
   const { nbHits } = useStats();
 
@@ -94,10 +133,18 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
 
   const memoizedHits = React.useMemo(
     () =>
-      hits.map((hit) => (
-        <CustomHit key={hit.objectID} hit={hit} urlPrefix={urlPrefix} onClick={onClick} showLibName={showLibName} />
+      hits.map((hit, index) => (
+        <CustomHit
+          key={hit.objectID}
+          hit={hit}
+          index={index}
+          activeResultIndex={activeResultIndex}
+          urlPrefix={urlPrefix}
+          onClick={onClick}
+          showLibName={showLibName}
+        />
       )),
-    [hits, urlPrefix, onClick, showLibName],
+    [hits, urlPrefix, onClick, showLibName, activeResultIndex],
   );
 
   if (error) {
@@ -109,11 +156,37 @@ function InfiniteHits({ urlPrefix, setnbHits, onClick, showLibName }) {
     );
   }
 
+  if (hits.length === 0 && !hasQuery) {
+    return (
+      <div className='search-modal__empty-state'>
+        <h2 className='search-modal__empty-state-title'>Ready when you are</h2>
+        <p className='search-modal__empty-state-subtitle'>
+          Your search results will appear here once you start typing.
+        </p>
+      </div>
+    );
+  }
+
+  if (hits.length === 0 && hasQuery) {
+    return (
+      <div className='search-modal__no-results'>
+        <h2 className='search-modal__no-results-title'>No Results Found</h2>
+        <p className='search-modal__no-results-subtitle'>Sorry, We couldn&apos;t find any matches for your search.</p>
+      </div>
+    );
+  }
+
   return (
-    <Stack spacing={2}>
+    <Stack
+      className='search-modal__hits-stack'
+      spacing={2}
+      role='listbox'
+      aria-label='Search results'
+      aria-busy={status === 'loading' || status === 'stalled'}
+    >
       {memoizedHits}
-      <Box textAlign='center'>
-        <Button disabled={isLastPage} onClick={showMore} sx={{ textTransform: 'none' }}>
+      <Box className='search-modal__show-more-wrapper' textAlign='center'>
+        <Button className='search-modal__show-more' disabled={isLastPage} onClick={showMore}>
           Show More
         </Button>
       </Box>
@@ -126,6 +199,8 @@ InfiniteHits.propTypes = {
   setnbHits: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   showLibName: PropTypes.bool,
+  hasQuery: PropTypes.bool.isRequired,
+  activeResultIndex: PropTypes.number.isRequired,
 };
 
 export default InfiniteHits;
